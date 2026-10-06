@@ -6,6 +6,7 @@ import { TokenDossierDrawer } from "@/components/TokenDossierDrawer";
 import { mockTokens } from "@/data/mockTokens";
 import { Token } from "@/types/token";
 import { MonadLogo } from "@/components/MonadLogo";
+import { MetaMaskLogo } from "@/components/icons/MetaMaskLogo";
 import {
   Lock,
   Sparkles,
@@ -201,7 +202,7 @@ export default function AlphaScannerPage() {
                   onClick={connectWallet}
                   className="w-full py-3 rounded-xl bg-[#7053F5] hover:bg-[#5E3FEB] text-white font-bold text-xs shadow-lg shadow-[#7053F5]/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
                 >
-                  <Zap className="w-4 h-4" />
+                  <MetaMaskLogo size={18} />
                   <span>Connect MetaMask Wallet</span>
                 </button>
               </div>

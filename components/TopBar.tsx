@@ -11,6 +11,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { MonadLogo } from "./MonadLogo";
+import { MetaMaskLogo } from "@/components/icons/MetaMaskLogo";
 import { useWallet } from "@/context/WalletContext";
 import { HeaderWalletButton } from "./HeaderWalletButton";
 export { HeaderWalletButton } from "./HeaderWalletButton";
@@ -210,9 +211,11 @@ export const TopBar: React.FC<TopBarProps> = ({
               <button
                 type="button"
                 onClick={connectWallet}
-                className="text-xs font-bold text-[#7053F5] hover:text-[#5E3FEB] flex items-center gap-1 cursor-pointer"
+                className="text-xs font-bold text-[#7053F5] hover:text-[#5E3FEB] flex items-center gap-1.5 cursor-pointer"
               >
-                Connect Wallet <ArrowRight className="h-3 w-3" />
+                <MetaMaskLogo size={14} />
+                <span>Connect Wallet</span>
+                <ArrowRight className="h-3 w-3" />
               </button>
               <button
                 type="button"

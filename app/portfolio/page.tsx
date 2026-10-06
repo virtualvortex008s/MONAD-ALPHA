@@ -26,6 +26,7 @@ import { useWallet } from "@/context/WalletContext";
 import { monadPublicClient, ERC20_ABI, MONAD_TESTNET_CONFIG } from "@/lib/monad";
 import { ScoreGauge } from "@/components/ScoreGauge";
 import { MonadLogo } from "@/components/MonadLogo";
+import { MetaMaskLogo } from "@/components/icons/MetaMaskLogo";
 import { mockTokens } from "@/data/mockTokens";
 
 const MON_PRICE_USD = 1.76; // Monad testnet baseline valuation anchor
@@ -191,7 +192,7 @@ export default function PortfolioPage() {
       <div className="py-12 px-4 max-w-xl mx-auto text-center space-y-6 animate-in fade-in duration-300">
         <div className="rounded-2xl border border-[#171922] bg-[#0D0F14] p-8 sm:p-12 shadow-2xl space-y-6">
           <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#7053F5]/15 text-[#7053F5] border border-[#7053F5]/30 mx-auto shadow-[0_0_25px_rgba(112, 83, 245,0.35)]">
-            <Wallet className="h-8 w-8" />
+            <MetaMaskLogo size={36} />
           </div>
 
           <div>
@@ -210,7 +211,7 @@ export default function PortfolioPage() {
               onClick={connectWallet}
               className="flex items-center justify-center gap-2 rounded-xl bg-[#7053F5] hover:bg-[#5E3FEB] px-6 py-3.5 text-xs font-bold text-white shadow-[0_0_20px_rgba(112,83,245,0.45)] transition-all active:scale-95 cursor-pointer"
             >
-              <Zap className="h-4 w-4" />
+              <MetaMaskLogo size={18} />
               <span>Connect MetaMask (Monad Testnet)</span>
             </button>
           </div>

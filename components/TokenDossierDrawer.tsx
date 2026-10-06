@@ -5,6 +5,7 @@ import { Token } from "@/types/token";
 import { TokenIntelligenceReport } from "@/lib/gemini";
 import { MiniChart } from "./MiniChart";
 import { MonadLogo } from "./MonadLogo";
+import { MetaMaskLogo } from "@/components/icons/MetaMaskLogo";
 import { useWallet } from "@/context/WalletContext";
 import {
   X,
@@ -496,9 +497,9 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
                   </p>
                   <button
                     onClick={connectWallet}
-                    className="px-4 py-2.5 rounded-xl bg-[#7053F5] hover:bg-[#5E3FEB] text-white text-xs font-bold shadow-md shadow-[#7053F5]/25 transition inline-flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="px-4 py-2.5 rounded-xl bg-[#7053F5] hover:bg-[#5E3FEB] text-white text-xs font-bold shadow-md shadow-[#7053F5]/25 transition inline-flex items-center justify-center gap-2 cursor-pointer"
                   >
-                    <Zap className="w-3.5 h-3.5" />
+                    <MetaMaskLogo size={16} />
                     <span>Connect MetaMask to Unlock AI Dossier</span>
                   </button>
                 </div>

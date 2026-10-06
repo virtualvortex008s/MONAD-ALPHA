@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useWallet } from "@/context/WalletContext";
-import { MetaMaskLogo } from "@/components/MetaMaskLogo";
+import { MetaMaskLogo } from "@/components/icons/MetaMaskLogo";
 
 export const HeaderWalletButton = () => {
   const { isConnected, isConnecting, address, balance, connectWallet, disconnectWallet } = useWallet();
