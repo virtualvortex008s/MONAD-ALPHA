@@ -131,10 +131,10 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
         onClick={onClose}
       />
 
-      <div className="fixed inset-y-0 right-0 flex max-w-full pl-6 sm:pl-10">
-        <div className="w-screen max-w-2xl transform border-l border-[#171922] bg-[#060709] shadow-2xl transition-all flex flex-col">
+      <div className="fixed inset-y-0 right-0 flex max-w-full w-full justify-end">
+        <div className="w-full sm:max-w-lg lg:max-w-2xl transform border-l border-[#171922] bg-[#060709] shadow-2xl transition-all flex flex-col">
           {/* Drawer Header */}
-          <div className="border-b border-[#171922] bg-[#0D0F14] p-5">
+          <div className="border-b border-[#171922] bg-[#0D0F14] p-4 sm:p-5">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#7053F5] to-[#5035E4] font-mono text-base font-black text-white shadow-[0_0_15px_rgba(112, 83, 245,0.4)]">
@@ -228,10 +228,10 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
               </div>
 
               {/* Actions */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                 <button
                   onClick={() => onToggleWatchlist(token.id)}
-                  className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold transition-all ${
+                  className={`flex flex-1 sm:flex-none justify-center items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold transition-all cursor-pointer ${
                     isWatchlisted
                       ? "border-amber-500/50 bg-amber-500/20 text-amber-300"
                       : "border-[#1E2230] bg-[#191C27] text-slate-300 hover:text-white hover:border-slate-500"
@@ -248,7 +248,7 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
                 <button
                   onClick={handleExecuteSwap}
                   disabled={isSwapping}
-                  className="flex items-center gap-1.5 rounded-xl bg-[#7053F5] px-3.5 py-2 text-xs font-bold text-white shadow-[0_0_15px_rgba(112, 83, 245,0.4)] hover:bg-[#6C52EE] transition-all active:scale-95 disabled:opacity-75 cursor-pointer"
+                  className="flex flex-1 sm:flex-none justify-center items-center gap-1.5 rounded-xl bg-[#7053F5] px-3.5 py-2 text-xs font-bold text-white shadow-[0_0_15px_rgba(112, 83, 245,0.4)] hover:bg-[#6C52EE] transition-all active:scale-95 disabled:opacity-75 cursor-pointer"
                 >
                   {isSwapping ? (
                     <>
@@ -265,7 +265,7 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
 
                 <a
                   href={`/token/${token.address}`}
-                  className="flex items-center gap-1 rounded-xl border border-[#7053F5]/50 bg-[#7053F5]/10 px-3 py-2 text-xs font-bold text-[#7053F5] hover:bg-[#7053F5]/20 transition-all"
+                  className="flex items-center justify-center gap-1 rounded-xl border border-[#7053F5]/50 bg-[#7053F5]/10 px-3 py-2 text-xs font-bold text-[#7053F5] hover:bg-[#7053F5]/20 transition-all"
                 >
                   <span>Full Page</span>
                   <span>→</span>
@@ -316,7 +316,7 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
           </div>
 
           {/* Drawer Body - Scrollable */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-6">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5 sm:space-y-6">
             {/* 1. Interactive Chart */}
             <div>
               <div className="mb-2 flex items-center justify-between">
@@ -519,8 +519,8 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
                 </span>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
+              <div className="w-full overflow-x-auto -mx-2 px-2 sm:mx-0 sm:px-0">
+                <table className="w-full min-w-[460px] text-left text-xs">
                   <thead className="border-b border-[#1E2230] text-[10px] font-semibold text-slate-500 uppercase">
                     <tr>
                       <th className="pb-2">Wallet</th>

@@ -10,6 +10,7 @@ import {
   X,
   ArrowRight,
 } from "lucide-react";
+import { MonadLogo } from "./MonadLogo";
 import { useWallet } from "@/context/WalletContext";
 import { HeaderWalletButton } from "./HeaderWalletButton";
 export { HeaderWalletButton } from "./HeaderWalletButton";
@@ -28,7 +29,6 @@ export const TopBar: React.FC<TopBarProps> = ({
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isBannerDismissed, setIsBannerDismissed] = useState(false);
 
-
   // Derive page title
   const getPageTitle = () => {
     if (pathname === "/") return "Dashboard";
@@ -39,45 +39,63 @@ export const TopBar: React.FC<TopBarProps> = ({
 
   return (
     <>
-      <div className="sticky top-0 z-30 w-full flex flex-col bg-[#060709]/90 backdrop-blur-md border-b border-[#171922]">
-        <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-          {/* Left: Mobile hamburger & Dynamic page title */}
-          <div className="flex items-center gap-4">
+      <div className="sticky top-0 z-30 w-full flex flex-col bg-[#060709]/95 backdrop-blur-md border-b border-[#171922]">
+        <div className="flex h-16 items-center justify-between px-3 sm:px-6 lg:px-8 gap-2 sm:gap-4">
+          {/* Left: Mobile hamburger & Brand / Dynamic page title */}
+          <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
             {onToggleSidebar && (
               <button
                 type="button"
                 onClick={onToggleSidebar}
-                className="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-[#13161F] transition cursor-pointer"
-                aria-label="Toggle sidebar navigation"
+                className="lg:hidden p-2 -ml-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#13161F] transition cursor-pointer shrink-0"
+                aria-label="Toggle navigation drawer"
               >
                 <Menu className="h-5 w-5" />
               </button>
             )}
 
-            <div>
-              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight leading-none">
+            {/* Mobile Brand Logo (<lg) */}
+            <Link href="/" className="flex lg:hidden items-center gap-2 group shrink-0">
+              <MonadLogo size={28} />
+              <div className="flex items-center gap-1 leading-none">
+                <span className="font-bold text-xs sm:text-sm text-white tracking-tight">MONAD</span>
+                <span className="font-bold text-xs sm:text-sm text-[#7053F5] font-mono">ALPHA</span>
+              </div>
+            </Link>
+
+            {/* Desktop Page Title (lg+) */}
+            <div className="hidden lg:block min-w-0">
+              <h1 className="text-base sm:text-lg font-bold text-white tracking-tight leading-none truncate">
                 {getPageTitle()}
               </h1>
-              <div className="hidden sm:flex items-center gap-1.5 mt-1">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#00FFA3] animate-pulse" />
-                <span className="text-[10px] font-mono uppercase text-slate-400 font-semibold tracking-wider">
+              <div className="flex items-center gap-1.5 mt-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#00FFA3] animate-pulse shrink-0" />
+                <span className="text-[10px] font-mono uppercase text-slate-400 font-semibold tracking-wider truncate">
                   Monad Testnet · 10,000 TPS · Real-Time
                 </span>
               </div>
             </div>
+
+            {/* Compact Testnet Indicator for Tablets (sm -> lg) */}
+            <div className="hidden sm:flex lg:hidden items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#00FFA3]/10 border border-[#00FFA3]/20 shrink-0">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00FFA3] animate-pulse" />
+              <span className="text-[10px] font-mono text-[#00FFA3] font-bold">
+                Testnet
+              </span>
+            </div>
           </div>
 
           {/* Right: Quick Search, Notifications & Web3 Wallet */}
-          <div className="flex items-center gap-3">
-            {/* Global Search Trigger */}
+          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+            {/* Global Search Trigger: Icon on <640px, full bar on >=640px */}
             <button
               type="button"
               onClick={onOpenSearch}
-              className="flex items-center gap-2 rounded-xl border border-[#171922] bg-[#0D0F14] px-3 py-1.5 text-xs text-slate-400 hover:border-slate-700 hover:text-white transition shadow-sm cursor-pointer"
+              className="flex items-center gap-2 rounded-xl border border-[#171922] bg-[#0D0F14] p-2 sm:px-3 sm:py-1.5 text-xs text-slate-400 hover:border-slate-700 hover:text-white transition shadow-sm cursor-pointer"
               aria-label="Search tokens, pools, and smart wallets"
             >
-              <Search className="h-3.5 w-3.5 text-slate-500" />
-              <span className="hidden md:inline font-mono">Search assets or pools...</span>
+              <Search className="h-4 w-4 sm:h-3.5 sm:w-3.5 text-slate-400" />
+              <span className="hidden sm:inline font-mono">Search...</span>
               <span className="hidden md:inline-flex items-center rounded border border-[#1E2230] bg-[#171922] px-1.5 py-0.5 text-[10px] font-mono text-slate-400">
                 ⌘K
               </span>

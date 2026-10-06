@@ -91,8 +91,8 @@ export const AlphaRadarTable: React.FC<AlphaRadarTableProps> = ({
 
   return (
     <div className="overflow-hidden rounded-xl border border-[#171922] bg-[#0D0F14] shadow-xl">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-xs">
+      <div className="w-full overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        <table className="w-full min-w-[650px] text-left text-xs">
           {/* Table Header */}
           <thead className="border-b border-[#171922] bg-[#0A0C11] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
             <tr>

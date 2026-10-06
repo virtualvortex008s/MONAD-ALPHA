@@ -193,22 +193,22 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
       </div>
 
       {/* Hero Header Card */}
-      <div className="relative overflow-hidden rounded-2xl border border-[#1E2230] bg-[#12141C] p-6 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl border border-[#1E2230] bg-[#12141C] p-4 sm:p-6 shadow-2xl">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           {/* Token Identity */}
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7053F5] to-[#5035E4] font-mono text-2xl font-black text-white shadow-[0_0_25px_rgba(112, 83, 245,0.4)]">
+          <div className="flex items-center gap-3.5 sm:gap-4">
+            <div className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#7053F5] to-[#5035E4] font-mono text-xl sm:text-2xl font-black text-white shadow-[0_0_25px_rgba(112, 83, 245,0.4)]">
               {token.symbol.replace("$", "").slice(0, 3)}
             </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="text-2xl sm:text-3xl font-black text-white">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-xl sm:text-3xl font-black text-white">
                   {token.symbol}
                 </h1>
-                <span className="text-base text-slate-400 font-medium">
+                <span className="text-sm sm:text-base text-slate-400 font-medium">
                   {token.name}
                 </span>
-                <span className="rounded-md border border-[#7053F5]/40 bg-[#7053F5]/15 px-2.5 py-0.5 font-mono text-xs font-bold text-[#7053F5]">
+                <span className="rounded-md border border-[#7053F5]/40 bg-[#7053F5]/15 px-2 py-0.5 font-mono text-xs font-bold text-[#7053F5]">
                   {token.alphaDriver}
                 </span>
               </div>
@@ -217,9 +217,11 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
               <div className="flex flex-wrap items-center gap-2 mt-2 text-xs font-mono text-slate-400">
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-1.5 rounded-md bg-[#191C27] px-2.5 py-1 text-slate-300 hover:text-white transition-colors"
+                  className="flex items-center gap-1.5 rounded-md bg-[#191C27] px-2 py-1 text-slate-300 hover:text-white transition-colors"
                 >
-                  <span>{token.address}</span>
+                  <span className="truncate max-w-[120px] sm:max-w-none">
+                    {token.address}
+                  </span>
                   {copiedAddress ? (
                     <Check className="h-3 w-3 text-emerald-400" />
                   ) : (
@@ -235,31 +237,31 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
                   <span>MonadScan</span>
                   <ExternalLink className="h-3 w-3" />
                 </a>
-                <span className="text-slate-600">•</span>
-                <span className="text-slate-500">Launched {token.launchTimeAgo}</span>
+                <span className="text-slate-600 hidden sm:inline">•</span>
+                <span className="text-slate-500 hidden sm:inline">Launched {token.launchTimeAgo}</span>
               </div>
             </div>
           </div>
 
           {/* Price & Scores Strip */}
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:flex lg:flex-wrap items-center gap-2.5 sm:gap-4 w-full lg:w-auto">
             {/* Price */}
-            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 text-right min-w-[140px]">
+            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 text-left sm:text-right min-w-0">
               <span className="text-[10px] text-slate-500 font-mono block uppercase">USD Price</span>
-              <div className="font-mono text-xl font-black text-white">
+              <div className="font-mono text-base sm:text-xl font-black text-white truncate">
                 ${token.priceUsd < 0.001 ? token.priceUsd.toFixed(6) : token.priceUsd.toFixed(4)}
               </div>
-              <div className="text-[11px] font-mono text-slate-400 flex items-center justify-end gap-1">
+              <div className="text-[11px] font-mono text-slate-400 flex items-center sm:justify-end gap-1">
                 <MonadLogo size={12} />
                 <span>{token.priceMon} MON</span>
               </div>
             </div>
 
             {/* 1h & 24h Change */}
-            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 min-w-[120px]">
+            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 min-w-0">
               <span className="text-[10px] text-slate-500 font-mono block uppercase">Performance</span>
               <div
-                className={`font-mono text-sm font-bold flex items-center gap-1 ${
+                className={`font-mono text-xs sm:text-sm font-bold flex items-center gap-1 ${
                   isPositive1h ? "text-emerald-400" : "text-rose-400"
                 }`}
               >
@@ -267,7 +269,7 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
                 <span>1h: {token.change1h >= 0 ? "+" : ""}{token.change1h.toFixed(1)}%</span>
               </div>
               <div
-                className={`font-mono text-xs font-bold ${
+                className={`font-mono text-[11px] sm:text-xs font-bold ${
                   isPositive24h ? "text-emerald-400" : "text-rose-400"
                 }`}
               >
@@ -276,15 +278,15 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
             </div>
 
             {/* Alpha Score */}
-            <div className="rounded-xl border border-[#7053F5]/40 bg-[#7053F5]/10 p-3 text-center min-w-[90px]">
+            <div className="rounded-xl border border-[#7053F5]/40 bg-[#7053F5]/10 p-3 text-center min-w-0">
               <span className="text-[10px] text-[#7053F5] font-mono font-bold block uppercase">Alpha Score</span>
-              <div className="font-mono text-2xl font-black text-white">{token.alphaScore}</div>
+              <div className="font-mono text-xl sm:text-2xl font-black text-white">{token.alphaScore}</div>
               <span className="text-[10px] text-[#7053F5]/80 font-mono">/ 100</span>
             </div>
 
             {/* Risk Score */}
             <div
-              className={`rounded-xl border p-3 text-center min-w-[90px] ${
+              className={`rounded-xl border p-3 text-center min-w-0 ${
                 token.riskScore < 40
                   ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-400"
                   : token.riskScore < 70
@@ -293,7 +295,7 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
               }`}
             >
               <span className="text-[10px] font-mono font-bold block uppercase opacity-80">Risk Score</span>
-              <div className="font-mono text-2xl font-black">{token.riskScore}</div>
+              <div className="font-mono text-xl sm:text-2xl font-black">{token.riskScore}</div>
               <span className="text-[10px] font-mono opacity-75">
                 {token.riskScore < 40 ? "LOW" : token.riskScore < 70 ? "MEDIUM" : "HIGH"}
               </span>
@@ -488,7 +490,7 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
         {/* Right 1 Column: Interactive Swap Simulator + Smart Accumulators */}
         <div className="space-y-8">
           {/* Swap Simulator Card */}
-          <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-6 shadow-xl">
+          <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-4 sm:p-6 shadow-xl">
             <div className="flex items-center justify-between border-b border-[#1E2230] pb-4 mb-5">
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4 text-[#7053F5]" />

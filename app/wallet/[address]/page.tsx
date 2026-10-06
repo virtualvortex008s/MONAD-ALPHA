@@ -119,20 +119,20 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
       </div>
 
       {/* Hero Header Card */}
-      <div className="relative overflow-hidden rounded-2xl border border-[#1E2230] bg-[#12141C] p-6 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl border border-[#1E2230] bg-[#12141C] p-4 sm:p-6 shadow-2xl">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
           {/* Identity */}
-          <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1E2230] to-[#12141C] border border-[#7053F5]/30 text-[#7053F5] shadow-[0_0_20px_rgba(112, 83, 245,0.2)]">
-              <Wallet className="h-8 w-8" />
+          <div className="flex items-center gap-3.5 sm:gap-4">
+            <div className="flex h-14 w-14 sm:h-16 sm:w-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1E2230] to-[#12141C] border border-[#7053F5]/30 text-[#7053F5] shadow-[0_0_20px_rgba(112, 83, 245,0.2)]">
+              <Wallet className="h-7 w-7 sm:h-8 sm:w-8" />
             </div>
-            <div>
-              <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="text-xl sm:text-2xl font-black text-white font-mono">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-base sm:text-2xl font-black text-white font-mono truncate max-w-[180px] sm:max-w-none">
                   {primaryProfile.walletAddress}
                 </h1>
                 <span
-                  className={`rounded-md border px-2.5 py-0.5 font-mono text-xs font-bold ${
+                  className={`rounded-md border px-2 py-0.5 font-mono text-xs font-bold ${
                     tagColors[primaryProfile.tag] || tagColors["Smart Trader"]
                   }`}
                 >
@@ -166,35 +166,35 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
                   <span>MonadScan</span>
                   <ExternalLink className="h-3 w-3" />
                 </a>
-                <span className="text-slate-600">•</span>
-                <span className="text-slate-500">Tier-1 Smart Cluster #492</span>
+                <span className="text-slate-600 hidden sm:inline">•</span>
+                <span className="text-slate-500 hidden sm:inline">Tier-1 Smart Cluster #492</span>
               </div>
             </div>
           </div>
 
           {/* 4 KPI Metrics */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
-            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 text-center min-w-[100px]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 font-mono text-xs w-full lg:w-auto">
+            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 text-center min-w-0">
               <span className="text-slate-500 block text-[10px] uppercase">Win Rate</span>
-              <span className="text-xl font-black text-emerald-400">{primaryProfile.winRate}%</span>
+              <span className="text-lg sm:text-xl font-black text-emerald-400">{primaryProfile.winRate}%</span>
               <span className="text-[10px] text-slate-400 block mt-0.5">Historical DEX</span>
             </div>
 
-            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 text-center min-w-[100px]">
+            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 text-center min-w-0">
               <span className="text-slate-500 block text-[10px] uppercase">Realized PnL</span>
-              <span className="text-xl font-black text-emerald-400">+{primaryProfile.pnlPercent}%</span>
-              <span className="text-[10px] text-slate-400 block mt-0.5">+${(primaryProfile.accumulatedUsd * 0.45).toFixed(0)}</span>
+              <span className="text-lg sm:text-xl font-black text-emerald-400">+{primaryProfile.pnlPercent}%</span>
+              <span className="text-[10px] text-slate-400 block mt-0.5 truncate">+${(primaryProfile.accumulatedUsd * 0.45).toFixed(0)}</span>
             </div>
 
-            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 text-center min-w-[100px]">
+            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 text-center min-w-0">
               <span className="text-slate-500 block text-[10px] uppercase">Accumulated</span>
-              <span className="text-xl font-black text-white">{primaryProfile.accumulatedMon.toLocaleString()}</span>
+              <span className="text-lg sm:text-xl font-black text-white truncate">{primaryProfile.accumulatedMon.toLocaleString()}</span>
               <span className="text-[10px] text-[#7053F5] block mt-0.5">MON</span>
             </div>
 
-            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 text-center min-w-[100px]">
+            <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 text-center min-w-0">
               <span className="text-slate-500 block text-[10px] uppercase">Execution</span>
-              <span className="text-xl font-black text-white">&lt;0.8s</span>
+              <span className="text-lg sm:text-xl font-black text-white">&lt;0.8s</span>
               <span className="text-[10px] text-emerald-400 block mt-0.5">Block 0-1 Entry</span>
             </div>
           </div>
@@ -208,7 +208,7 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
         {/* Left 2 Columns: Portfolio Holdings & Intelligence */}
         <div className="lg:col-span-2 space-y-8">
           {/* Portfolio Holdings */}
-          <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-6 shadow-xl space-y-4">
+          <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-4 sm:p-6 shadow-xl space-y-4">
             <div className="flex items-center justify-between border-b border-[#1E2230] pb-4">
               <div className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5 text-[#7053F5]" />
@@ -219,8 +219,8 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
               </span>
             </div>
 
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs font-mono">
+            <div className="w-full overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+              <table className="w-full min-w-[550px] text-left text-xs font-mono">
                 <thead>
                   <tr className="border-b border-[#1E2230] bg-[#0E1017]/60 text-[10px] text-slate-400 uppercase tracking-wider">
                     <th className="py-3 px-4">Token</th>
@@ -291,14 +291,14 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
           </div>
 
           {/* Wallet Intelligence / Behavioral Profile */}
-          <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-6 shadow-xl space-y-4">
+          <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-4 sm:p-6 shadow-xl space-y-4">
             <div className="flex items-center gap-2 border-b border-[#1E2230] pb-4">
               <Sparkles className="h-5 w-5 text-[#7053F5]" />
               <h3 className="text-base font-bold text-white">Algorithmic Behavior Profile</h3>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-              <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-4 space-y-2">
+              <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3.5 sm:p-4 space-y-2">
                 <span className="font-bold text-white block">Execution Characteristics</span>
                 <p className="text-slate-400 leading-relaxed">
                   Consistently utilizes customized private RPCs targeting sub-second block slots. 
@@ -306,7 +306,7 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
                 </p>
               </div>
 
-              <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-4 space-y-2">
+              <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3.5 sm:p-4 space-y-2">
                 <span className="font-bold text-white block">Risk Management Rules</span>
                 <p className="text-slate-400 leading-relaxed">
                   Enforces strict stop-loss cutoffs at -15% drawdown with systematic scale-outs at 2x and 3x multipliers. 
@@ -319,7 +319,7 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
 
         {/* Right 1 Column: Live Transaction History */}
         <div className="space-y-8">
-          <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-6 shadow-xl space-y-4">
+          <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-4 sm:p-6 shadow-xl space-y-4">
             <div className="flex items-center justify-between border-b border-[#1E2230] pb-4">
               <div className="flex items-center gap-2">
                 <Activity className="h-4 w-4 text-[#7053F5]" />

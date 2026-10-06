@@ -102,8 +102,8 @@ export default function SmartMoneyPage() {
         </div>
 
         {/* Leaderboard Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="w-full overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <table className="w-full min-w-[700px] text-left text-xs">
             <thead className="border-b border-[#1E2230] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
               <tr>
                 <th className="pb-3 pl-2">Rank / Wallet Address</th>

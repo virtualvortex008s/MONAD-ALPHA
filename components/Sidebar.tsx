@@ -57,8 +57,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-50 flex w-64 flex-col border-r border-[#171922] bg-[#060709] transition-transform duration-200 ease-in-out lg:static lg:translate-x-0 ${
-          isOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"
+        className={`fixed top-0 bottom-0 left-0 z-50 flex w-72 max-w-[85vw] sm:w-64 flex-col border-r border-[#171922] bg-[#060709] transition-transform duration-300 ease-in-out lg:static lg:w-64 lg:translate-x-0 ${
+          isOpen ? "translate-x-0 shadow-2xl shadow-black/80" : "-translate-x-full"
         }`}
       >
         {/* Header Branding */}
@@ -88,10 +88,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
           {onClose && (
             <button
               onClick={onClose}
-              className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-md hover:bg-[#13161F]"
-              aria-label="Close sidebar"
+              className="lg:hidden p-2 text-slate-400 hover:text-white rounded-lg hover:bg-[#13161F] transition cursor-pointer"
+              aria-label="Close navigation drawer"
             >
-              <X className="h-4 w-4" />
+              <X className="h-5 w-5" />
             </button>
           )}
         </div>

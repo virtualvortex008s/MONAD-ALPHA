@@ -84,14 +84,14 @@ export const SearchModal: React.FC<SearchModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center pt-16 sm:pt-24 bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-12 sm:pt-24 bg-black/80 backdrop-blur-sm p-3 sm:p-4 animate-in fade-in duration-150">
       <div
         className="w-full max-w-xl rounded-2xl border border-[#171922] bg-[#0D0F14] shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Bar Input */}
-        <div className="flex items-center border-b border-[#1E2230] px-4 py-3.5 bg-[#0E1017]">
-          <Search className="h-5 w-5 text-slate-400 mr-3" />
+        <div className="flex items-center border-b border-[#1E2230] px-3.5 sm:px-4 py-3 sm:py-3.5 bg-[#0E1017]">
+          <Search className="h-4 sm:h-5 w-4 sm:w-5 text-slate-400 mr-2.5 sm:mr-3 shrink-0" />
           <input
             ref={inputRef}
             type="text"
@@ -102,7 +102,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
             }}
             onKeyDown={handleKeyDown}
             placeholder="Search tokens, symbols, or 0x contract address..."
-            className="flex-1 bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none"
+            className="flex-1 bg-transparent text-sm text-white placeholder-slate-500 focus:outline-none min-w-0"
           />
           {query ? (
             <button
@@ -119,7 +119,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         </div>
 
         {/* Results List */}
-        <div className="max-h-80 overflow-y-auto p-2 divide-y divide-[#1E2230]/50">
+        <div className="max-h-80 overflow-y-auto p-1.5 sm:p-2 divide-y divide-[#1E2230]/50">
           {filtered.length === 0 ? (
             <div className="py-10 text-center text-xs text-slate-400">
               No matching assets found for &quot;{query}&quot;
@@ -135,35 +135,35 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                     handleClose();
                   }}
                   onMouseEnter={() => setSelectedIndex(index)}
-                  className={`flex items-center justify-between rounded-xl p-3 cursor-pointer transition-colors ${
+                  className={`flex items-center justify-between rounded-xl p-2.5 sm:p-3 cursor-pointer transition-colors ${
                     isSelected
                       ? "bg-[#7053F5]/15 border border-[#7053F5]/30"
                       : "hover:bg-[#191C27] border border-transparent"
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#7053F5]/20 font-mono text-xs font-black text-[#7053F5]">
+                  <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1 mr-2">
+                    <div className="flex h-8 w-8 sm:h-9 sm:w-9 shrink-0 items-center justify-center rounded-lg bg-[#7053F5]/20 font-mono text-xs font-black text-[#7053F5]">
                       {token.symbol.replace("$", "").slice(0, 3)}
                     </div>
-                    <div>
-                      <div className="flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
                         <span className="font-bold text-white text-sm">
                           {token.symbol}
                         </span>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-slate-400 truncate max-w-[85px] sm:max-w-none">
                           {token.name}
                         </span>
                         <span className="rounded bg-[#7053F5]/20 px-1.5 py-0.2 font-mono text-[10px] text-[#7053F5] font-bold">
                           Alpha {token.alphaScore}
                         </span>
                       </div>
-                      <span className="font-mono text-[10px] text-slate-500">
+                      <span className="font-mono text-[10px] text-slate-500 truncate block max-w-[130px] sm:max-w-xs">
                         {token.address}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-4 text-right">
+                  <div className="flex items-center gap-2 sm:gap-4 text-right shrink-0">
                     <div>
                       <div className="font-mono text-xs font-bold text-white">
                         ${token.priceUsd < 0.01 ? token.priceUsd.toFixed(6) : token.priceUsd.toFixed(4)}
@@ -179,7 +179,7 @@ export const SearchModal: React.FC<SearchModalProps> = ({
                         {token.change1h}%
                       </span>
                     </div>
-                    <ArrowRight className="h-4 w-4 text-slate-500" />
+                    <ArrowRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-slate-500" />
                   </div>
                 </div>
               );
@@ -188,8 +188,8 @@ export const SearchModal: React.FC<SearchModalProps> = ({
         </div>
 
         {/* Footer shortcuts */}
-        <div className="flex items-center justify-between border-t border-[#1E2230] bg-[#0E1017] px-4 py-2.5 text-[11px] text-slate-500">
-          <div className="flex items-center gap-3">
+        <div className="flex items-center justify-between border-t border-[#1E2230] bg-[#0E1017] px-3.5 sm:px-4 py-2 sm:py-2.5 text-[11px] text-slate-500">
+          <div className="hidden sm:flex items-center gap-3">
             <span>
               <kbd className="rounded bg-[#191C27] px-1 py-0.5 text-[10px] text-slate-400 mr-1">
                 ↑↓
@@ -205,6 +205,9 @@ export const SearchModal: React.FC<SearchModalProps> = ({
           </div>
           <span className="font-mono text-[10px] text-slate-400">
             Monad Alpha Omni-Search
+          </span>
+          <span className="text-[10px] text-slate-500 sm:hidden">
+            Tap to inspect
           </span>
         </div>
       </div>

@@ -210,8 +210,8 @@ export default function AlphaScannerPage() {
         )}
 
         {/* SCANNER TABLE PREVIEW (Blurred underneath when disconnected) */}
-        <div className={`p-4 overflow-x-auto ${!isConnected ? "filter blur-sm select-none pointer-events-none" : ""}`}>
-          <table className="w-full text-left text-xs font-mono">
+        <div className={`p-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 ${!isConnected ? "filter blur-sm select-none pointer-events-none" : ""}`}>
+          <table className="w-full min-w-[650px] text-left text-xs font-mono">
             <thead className="border-b border-[#171922] text-slate-500 uppercase text-[10px] tracking-wider">
               <tr>
                 <th className="p-3">Asset</th>

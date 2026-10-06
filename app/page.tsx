@@ -159,9 +159,9 @@ function DashboardContent() {
   return (
     <div className="space-y-6">
       {/* 1. TOP 4 LARGE METRIC CARDS */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Card 1: Network TPS */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               NETWORK TPS
@@ -183,7 +183,7 @@ function DashboardContent() {
         </div>
 
         {/* Card 2: Active Wallets */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               ACTIVE WALLETS
@@ -205,7 +205,7 @@ function DashboardContent() {
         </div>
 
         {/* Card 3: 24H Volume */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               24H VOLUME
@@ -227,7 +227,7 @@ function DashboardContent() {
         </div>
 
         {/* Card 4: New Tokens */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               NEW TOKENS
@@ -252,9 +252,9 @@ function DashboardContent() {
       </div>
 
       {/* 2. SPLIT TWO-COLUMN LIVE ACTIVITY SECTION */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6">
         {/* Left Column: Live Alpha Signals ● Live */}
-        <div className="lg:col-span-6 rounded-xl border border-[#171922] bg-[#0D0F14] p-5 shadow-xl flex flex-col">
+        <div className="lg:col-span-6 rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 shadow-xl flex flex-col">
           <div className="flex items-center justify-between pb-3.5 border-b border-[#171922] mb-4">
             <div className="flex items-center gap-2">
               <Activity className="h-4 w-4 text-[#7053F5]" />
@@ -370,7 +370,7 @@ function DashboardContent() {
         </div>
 
         {/* Right Column: Live Blockchain Activity ● (Terminal Window) */}
-        <div className="lg:col-span-6 rounded-xl border border-[#171922] bg-[#0A0C11] p-5 shadow-xl flex flex-col font-mono">
+        <div className="lg:col-span-6 rounded-xl border border-[#171922] bg-[#0A0C11] p-4 sm:p-5 shadow-xl flex flex-col font-mono">
           {/* Terminal Window Header with dots */}
           <div className="flex items-center justify-between pb-3.5 border-b border-[#171922] mb-3 text-xs">
             <div className="flex items-center gap-2 text-slate-400">
@@ -390,7 +390,7 @@ function DashboardContent() {
           </div>
 
           {/* Scrolling on-chain swap stream */}
-          <div className="space-y-2 flex-1 overflow-y-auto max-h-[290px] pr-1">
+          <div className="space-y-2 flex-1 overflow-y-auto max-h-[300px] sm:max-h-[400px] pr-1 touch-pan-y overscroll-contain">
             {terminalLogs.map((log) => {
               let tagColor = "text-[#00FFA3]";
               if (log.type === "spike") tagColor = "text-[#F59E0B]";

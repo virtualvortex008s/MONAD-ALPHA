@@ -61,18 +61,18 @@ export const FloatingHandbook: React.FC = () => {
     <>
       {/* 1. FLOATING TRIGGER GROUP (Bottom-Right) */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex flex-col items-end gap-2 max-w-[calc(100vw-32px)]">
           {/* INITIAL WELCOME CALLOUT BUBBLE */}
           {showPrompt && (
-            <div className="animate-bounce duration-1000 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#7053F5] text-white text-[11px] font-semibold shadow-xl shadow-[#7053F5]/30 border border-white/20 relative">
-              <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
-              <span>👋 New to Monad Alpha? Start here!</span>
+            <div className="animate-bounce duration-1000 flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-[#7053F5] text-white text-[10px] sm:text-[11px] font-semibold shadow-xl shadow-[#7053F5]/30 border border-white/20 relative max-w-full">
+              <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse shrink-0"></span>
+              <span className="truncate">👋 New to Monad Alpha? Start here!</span>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowPrompt(false);
                 }}
-                className="ml-1 text-white/70 hover:text-white transition p-0.5 rounded"
+                className="ml-1 text-white/70 hover:text-white transition p-0.5 rounded cursor-pointer"
                 title="Dismiss prompt"
               >
                 ✕
@@ -88,7 +88,7 @@ export const FloatingHandbook: React.FC = () => {
               setIsOpen(true);
               setShowPrompt(false);
             }}
-            className="px-4 py-2.5 rounded-full bg-[#12141C] border border-[#7053F5]/60 hover:border-[#7053F5] text-white text-xs font-semibold shadow-2xl shadow-[#7053F5]/30 hover:shadow-[#7053F5]/50 transition-all flex items-center gap-2.5 group backdrop-blur-md cursor-pointer"
+            className="px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-full bg-[#12141C] border border-[#7053F5]/60 hover:border-[#7053F5] text-white text-xs font-semibold shadow-2xl shadow-[#7053F5]/30 hover:shadow-[#7053F5]/50 transition-all flex items-center gap-2 sm:gap-2.5 group backdrop-blur-md cursor-pointer"
           >
             {/* Glowing Book Icon */}
             <div className="w-6 h-6 rounded-full bg-[#7053F5]/20 border border-[#7053F5]/40 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -97,8 +97,8 @@ export const FloatingHandbook: React.FC = () => {
 
             <div className="flex items-center gap-1.5 font-mono">
               <span className="font-bold">Handbook</span>
-              <span className="text-slate-500">·</span>
-              <span className="text-[#7053F5] text-[11px] font-bold">Start Here ✦</span>
+              <span className="text-slate-500 hidden sm:inline">·</span>
+              <span className="text-[#7053F5] text-[11px] font-bold hidden sm:inline">Start Here ✦</span>
             </div>
 
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -111,40 +111,40 @@ export const FloatingHandbook: React.FC = () => {
         <div
           className={`fixed z-50 bg-[#12141C]/98 border border-[#1E2230] rounded-2xl shadow-2xl backdrop-blur-2xl flex flex-col overflow-hidden transition-all duration-300 ${
             isMaximized
-              ? "inset-4 md:inset-10"
-              : "bottom-6 right-6 w-full max-w-2xl h-[700px] max-h-[88vh]"
+              ? "inset-2 sm:inset-4 md:inset-10"
+              : "bottom-4 right-4 w-[calc(100vw-32px)] max-h-[85vh] sm:bottom-6 sm:right-6 sm:w-full sm:max-w-2xl sm:h-[700px] sm:max-h-[88vh]"
           }`}
         >
           {/* Header */}
-          <div className="px-5 py-3.5 border-b border-[#1E2230] bg-[#0B0C10]/80 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-[#7053F5]/20 border border-[#7053F5]/40 flex items-center justify-center">
-                <BookOpen className="w-4 h-4 text-[#7053F5]" />
+          <div className="px-4 sm:px-5 py-3 sm:py-3.5 border-b border-[#1E2230] bg-[#0B0C10]/80 flex items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
+              <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#7053F5]/20 border border-[#7053F5]/40 flex items-center justify-center shrink-0">
+                <BookOpen className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#7053F5]" />
               </div>
-              <div>
-                <h2 className="font-extrabold text-white text-sm tracking-tight flex items-center gap-2">
-                  MONAD ALPHA{" "}
-                  <span className="text-[11px] font-mono text-[#7053F5] px-1.5 py-0.5 rounded bg-[#7053F5]/10 border border-[#7053F5]/20">
-                    MANUAL v1.0
+              <div className="min-w-0">
+                <h2 className="font-extrabold text-white text-xs sm:text-sm tracking-tight flex items-center gap-1.5 sm:gap-2 truncate">
+                  <span>MONAD ALPHA</span>
+                  <span className="text-[10px] sm:text-[11px] font-mono text-[#7053F5] px-1.5 py-0.2 sm:py-0.5 rounded bg-[#7053F5]/10 border border-[#7053F5]/20 shrink-0">
+                    MANUAL
                   </span>
                 </h2>
-                <p className="text-[10px] text-slate-400 font-mono">
-                  Documentation & Visual User Guide
+                <p className="text-[9px] sm:text-[10px] text-slate-400 font-mono truncate">
+                  Documentation & User Guide
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1 sm:gap-2 shrink-0">
               <button
                 onClick={() => setIsMaximized(!isMaximized)}
-                className="p-2 rounded-lg hover:bg-[#191C27] text-slate-400 hover:text-white transition cursor-pointer"
+                className="hidden sm:inline-flex p-2 rounded-lg hover:bg-[#191C27] text-slate-400 hover:text-white transition cursor-pointer"
                 title={isMaximized ? "Collapse" : "Expand Fullscreen"}
               >
                 {isMaximized ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
               </button>
               <button
                 onClick={() => setIsOpen(false)}
-                className="p-2 rounded-lg hover:bg-[#191C27] text-slate-400 hover:text-white transition cursor-pointer"
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-[#191C27] text-slate-400 hover:text-white transition cursor-pointer"
                 title="Close (Esc)"
               >
                 <X className="w-4 h-4" />
@@ -152,9 +152,27 @@ export const FloatingHandbook: React.FC = () => {
             </div>
           </div>
 
+          {/* Mobile Horizontally Scrollable Chapter Tabs (<sm) */}
+          <div className="sm:hidden border-b border-[#1E2230] bg-[#0B0C10]/60 p-2 overflow-x-auto flex items-center gap-1.5 scrollbar-none shrink-0">
+            {chapters.map((chapter) => (
+              <button
+                key={chapter.id}
+                onClick={() => setActiveTab(chapter.id)}
+                className={`shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium flex items-center gap-1.5 transition cursor-pointer ${
+                  activeTab === chapter.id
+                    ? "bg-[#7053F5] text-white font-semibold shadow-sm"
+                    : "text-slate-400 bg-[#12141C] border border-[#1E2230]"
+                }`}
+              >
+                {chapter.icon}
+                <span>{chapter.title.split(". ")[1]}</span>
+              </button>
+            ))}
+          </div>
+
           {/* Reader Body: Two-Column Layout */}
           <div className="flex-1 flex overflow-hidden">
-            {/* Sidebar Table of Contents */}
+            {/* Desktop Sidebar Table of Contents (hidden on mobile, full width on reading pane) */}
             <div className="w-56 border-r border-[#1E2230] bg-[#0B0C10]/40 p-3 hidden sm:flex flex-col gap-3 shrink-0">
               <div className="relative">
                 <input

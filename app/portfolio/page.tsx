@@ -294,9 +294,9 @@ export default function PortfolioPage() {
         </div>
 
         {/* Sync Status & Refresh Button */}
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
           {lastSyncTime && (
-            <span className="hidden md:inline-block text-[11px] font-mono text-slate-500">
+            <span className="text-[11px] font-mono text-slate-500 text-center sm:text-right">
               Synced {lastSyncTime}
             </span>
           )}
@@ -304,7 +304,7 @@ export default function PortfolioPage() {
             type="button"
             onClick={fetchOnChainData}
             disabled={isRefreshing}
-            className="flex items-center gap-2 rounded-lg border border-[#171922] bg-[#13161F] hover:bg-[#1f2330] px-3.5 py-2 text-xs font-semibold text-slate-200 hover:text-white transition active:scale-95 disabled:opacity-50"
+            className="flex items-center justify-center gap-2 rounded-lg border border-[#171922] bg-[#13161F] hover:bg-[#1f2330] px-3.5 py-2 text-xs font-semibold text-slate-200 hover:text-white transition active:scale-95 disabled:opacity-50 w-full sm:w-auto cursor-pointer"
           >
             <RefreshCw className={`h-3.5 w-3.5 text-[#7053F5] ${isRefreshing ? "animate-spin" : ""}`} />
             <span>{isRefreshing ? "Querying RPC..." : "Refresh On-Chain"}</span>
@@ -313,9 +313,9 @@ export default function PortfolioPage() {
       </div>
 
       {/* 2. 4 KEY STAT CARDS (Real Variables) */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* Card 1: Real Portfolio Value */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-5 hover:border-[#7053F5]/40 transition shadow-lg">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               PORTFOLIO VALUE
@@ -334,7 +334,7 @@ export default function PortfolioPage() {
         </div>
 
         {/* Card 2: 24H P/L (Unrealized) */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-5 hover:border-[#7053F5]/40 transition shadow-lg">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               24H ESTIMATED P/L
@@ -352,7 +352,7 @@ export default function PortfolioPage() {
         </div>
 
         {/* Card 3: Real Native MON Balance */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-5 hover:border-[#7053F5]/40 transition shadow-lg">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               MON BALANCE
@@ -371,7 +371,7 @@ export default function PortfolioPage() {
         </div>
 
         {/* Card 4: Authentic On-Chain Activity Score */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-5 hover:border-[#7053F5]/40 transition shadow-lg">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               ACTIVITY SCORE
@@ -392,7 +392,7 @@ export default function PortfolioPage() {
       </div>
 
       {/* 3. 30-DAY PORTFOLIO CHART CARD */}
-      <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-6 shadow-xl space-y-4">
+      <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-6 shadow-xl space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#171922] pb-4">
           <div>
             <div className="flex items-center gap-2">
@@ -408,27 +408,37 @@ export default function PortfolioPage() {
             </p>
           </div>
 
-          {/* Timeframe selector */}
-          <div className="flex items-center gap-1 rounded-lg border border-[#171922] bg-[#060709] p-1 text-xs font-mono">
-            {(["7D", "30D", "90D", "1Y"] as const).map((tf) => (
-              <button
-                key={tf}
-                type="button"
-                onClick={() => setActiveTimeframe(tf)}
-                className={`rounded-md px-3 py-1 font-bold transition-all ${
-                  activeTimeframe === tf
-                    ? "bg-[#7053F5] text-white shadow"
-                    : "text-slate-400 hover:text-white"
-                }`}
-              >
-                {tf}
-              </button>
-            ))}
+          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-3">
+            {/* Current NAV marker */}
+            <div className="text-left sm:text-right font-mono">
+              <span className="text-[10px] text-slate-500 block uppercase">Portfolio NAV</span>
+              <span className="text-sm font-bold text-white">
+                ${totalPortfolioValue.toFixed(2)} USD
+              </span>
+            </div>
+
+            {/* Timeframe selector */}
+            <div className="flex items-center gap-1 rounded-lg border border-[#171922] bg-[#060709] p-1 text-xs font-mono">
+              {(["7D", "30D", "90D", "1Y"] as const).map((tf) => (
+                <button
+                  key={tf}
+                  type="button"
+                  onClick={() => setActiveTimeframe(tf)}
+                  className={`rounded-md px-2.5 sm:px-3 py-1 font-bold transition-all cursor-pointer ${
+                    activeTimeframe === tf
+                      ? "bg-[#7053F5] text-white shadow"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  {tf}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
         {/* Glowing Purple Area Chart SVG */}
-        <div className="relative w-full h-56 pt-2">
+        <div className="relative w-full h-48 sm:h-56 pt-2">
           <svg
             className="w-full h-full overflow-visible"
             viewBox="0 0 800 160"
@@ -468,14 +478,6 @@ export default function PortfolioPage() {
               className="drop-shadow-[0_0_8px_#00FFA3]"
             />
           </svg>
-
-          {/* Current NAV marker */}
-          <div className="absolute top-2 right-2 text-right font-mono">
-            <span className="text-xs text-slate-500 block">Current Portfolio NAV</span>
-            <span className="text-sm font-bold text-white">
-              ${totalPortfolioValue.toFixed(2)} USD
-            </span>
-          </div>
         </div>
       </div>
 
