@@ -2,6 +2,7 @@
   "name": "monad-alpha",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,9 +10,15 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google/genai": "^2.21.0",
+    "clsx": "^2.1.1",
+    "lightweight-charts": "^5.2.1",
+    "lucide-react": "^1.44.0",
     "next": "16.3.4",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "tailwind-merge": "^3.6.0",
+    "viem": "^2.56.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
