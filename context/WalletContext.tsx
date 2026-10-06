@@ -24,6 +24,34 @@ export const MONAD_TESTNET_CONFIG = {
 
 export const MONAD_TESTNET_CHAIN_ID = 10143;
 
+// Helper to detect mobile operating systems
+export const isMobileDevice = (): boolean => {
+  if (typeof window === "undefined") return false;
+  return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent || navigator.vendor || (window as any).opera
+  );
+};
+
+// Check if currently running inside MetaMask's mobile in-app browser
+export const isInMetaMaskBrowser = (): boolean => {
+  if (typeof window === "undefined") return false;
+  return Boolean(
+    (window as any).ethereum?.isMetaMask && isMobileDevice()
+  );
+};
+
+// Generate MetaMask Universal Deep Link with auto-connect parameter
+export const getMetaMaskDeepLink = (url?: string): string => {
+  if (typeof window === "undefined") return "https://metamask.app.link/dapp/";
+  const target = url || window.location.href;
+  const urlWithoutProtocol = target.replace(/^https?:\/\//i, "");
+  const separator = urlWithoutProtocol.includes("?") ? "&" : "?";
+  const autoConnectParam = urlWithoutProtocol.includes("autoConnect=true")
+    ? urlWithoutProtocol
+    : `${urlWithoutProtocol}${separator}autoConnect=true`;
+  return `https://metamask.app.link/dapp/${autoConnectParam}`;
+};
+
 interface WalletContextType {
   address: `0x${string}` | null;
   balance: string | null;
@@ -33,6 +61,8 @@ interface WalletContextType {
   disconnectWallet: () => void;
   copyAddress: () => void;
   isCopied: boolean;
+  isMobile: boolean;
+  isInMetaMask: boolean;
 }
 
 const WalletContext = createContext<WalletContextType>({
@@ -44,6 +74,8 @@ const WalletContext = createContext<WalletContextType>({
   disconnectWallet: () => {},
   copyAddress: () => {},
   isCopied: false,
+  isMobile: false,
+  isInMetaMask: false,
 });
 
 export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -51,6 +83,13 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [balance, setBalance] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isInMetaMask, setIsInMetaMask] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(isMobileDevice());
+    setIsInMetaMask(isInMetaMaskBrowser());
+  }, []);
 
   // Fetch balance via MetaMask to avoid browser CORS
   const fetchBalance = async (userAddress: `0x${string}`) => {
@@ -71,8 +110,17 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     }
   };
 
-  const connectWallet = async () => {
+  const connectWallet = useCallback(async () => {
+    // 1. If window.ethereum is not found (e.g., standard Mobile Safari / Chrome)
     if (typeof window === "undefined" || !window.ethereum) {
+      if (isMobileDevice()) {
+        // Redirect directly into the MetaMask mobile app via Universal Deep Link
+        const deepLink = getMetaMaskDeepLink();
+        window.location.href = deepLink;
+        return;
+      }
+
+      // Desktop fallback: Open MetaMask download page
       window.open("https://metamask.io/download/", "_blank");
       return;
     }
@@ -80,7 +128,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     try {
       setIsConnecting(true);
 
-      // 1. Request accounts (Safe, standard, zero extension crash)
+      // 2. Request accounts (Safe, standard, zero extension crash)
       const accounts = (await window.ethereum.request({
         method: "eth_requestAccounts",
       })) as string[];
@@ -91,14 +139,14 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
 
       const userAddress = accounts[0] as `0x${string}`;
 
-      // 2. Ensure user is switched to Monad Testnet (Chain ID 10143)
+      // 3. Ensure user is switched to Monad Testnet (Chain ID 10143)
       try {
         await window.ethereum.request({
           method: "wallet_switchEthereumChain",
           params: [{ chainId: MONAD_TESTNET_CONFIG.chainId }],
         });
       } catch (switchError: any) {
-        if (switchError.code === 4902) {
+        if (switchError.code === 4902 || switchError?.data?.originalError?.code === 4902) {
           await window.ethereum.request({
             method: "wallet_addEthereumChain",
             params: [MONAD_TESTNET_CONFIG],
@@ -106,49 +154,40 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         }
       }
 
-      // 3. PHYSICAL METAMASK POPUP: Request Gasless Handshake Signature
-      // This physically opens the MetaMask window and requires the user to click "Sign" / "Authorize"
+      // 4. Gasless Handshake Signature (Personal Sign)
       const authMessage = `Welcome to Monad Alpha!\n\nAuthorize connection to Monad Testnet.\n\nWallet: ${userAddress}\nTimestamp: ${new Date().toISOString()}`;
       
-      // Convert message to hex for MetaMask personal_sign
       const hexMessage = `0x${Array.from(new TextEncoder().encode(authMessage))
         .map((b) => b.toString(16).padStart(2, "0"))
         .join("")}`;
 
-      await window.ethereum.request({
-        method: "personal_sign",
-        params: [hexMessage, userAddress],
-      });
-
-      // 4. Set state once authorized
-      setAddress(userAddress);
-
-      // 5. Fetch real native $MON balance
       try {
-        const hexBalance = (await window.ethereum.request({
-          method: "eth_getBalance",
-          params: [userAddress, "latest"],
-        })) as string;
-
-        if (hexBalance) {
-          const formatted = parseFloat(formatEther(BigInt(hexBalance))).toFixed(3);
-          setBalance(formatted);
+        await window.ethereum.request({
+          method: "personal_sign",
+          params: [hexMessage, userAddress],
+        });
+      } catch (signError: any) {
+        if (signError?.code === 4001) {
+          console.warn("User cancelled signature handshake in MetaMask.");
+          return;
         }
-      } catch (balErr) {
-        console.warn("Could not fetch balance:", balErr);
-        setBalance("0.000");
+        console.warn("Personal sign handshake warning:", signError);
       }
+
+      // 5. Set authorized state
+      setAddress(userAddress);
+      fetchBalance(userAddress);
 
     } catch (error: any) {
       if (error?.code === 4001) {
-        console.log("User cancelled connection/signature in MetaMask.");
+        console.log("User cancelled connection in MetaMask.");
       } else {
         console.error("MetaMask connection failed:", error);
       }
     } finally {
       setIsConnecting(false);
     }
-  };
+  }, []);
 
   const disconnectWallet = () => {
     setAddress(null);
@@ -161,6 +200,38 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
   }, [address]);
+
+  // Check on mount: auto-connect if query param autoConnect=true is present or silent auth if inside MetaMask
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const shouldAutoConnect = urlParams.get("autoConnect") === "true";
+
+    if (window.ethereum) {
+      // 1. If redirected via MetaMask deep link, clean up URL and trigger connection
+      if (shouldAutoConnect) {
+        const cleanUrl = new URL(window.location.href);
+        cleanUrl.searchParams.delete("autoConnect");
+        window.history.replaceState({}, document.title, cleanUrl.pathname + (cleanUrl.search ? cleanUrl.search : "") + cleanUrl.hash);
+
+        connectWallet();
+      } else {
+        // 2. Silent reconnect: check if account is already authorized
+        window.ethereum
+          .request({ method: "eth_accounts" })
+          .then((accounts) => {
+            const accts = accounts as string[];
+            if (accts && accts.length > 0) {
+              const userAddress = accts[0] as `0x${string}`;
+              setAddress(userAddress);
+              fetchBalance(userAddress);
+            }
+          })
+          .catch((err) => console.warn("Silent eth_accounts error:", err));
+      }
+    }
+  }, [connectWallet]);
 
   // Listen for account/network changes
   useEffect(() => {
@@ -203,6 +274,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
         disconnectWallet,
         copyAddress,
         isCopied,
+        isMobile,
+        isInMetaMask,
       }}
     >
       {children}
