@@ -65,9 +65,9 @@ Return ONLY valid JSON matching this exact structure:
 
     const client = ai || new GoogleGenAI({ apiKey: currentKey });
 
-    // Official Google Gen AI generateContent method with gemini-2.0-flash
+    // Official Google Gen AI generateContent method with gemini-3.8-flash
     const response = await client.models.generateContent({
-      model: "gemini-2.0-flash",
+      model: "gemini-3.8-flash",
       contents: prompt,
       config: {
         responseMimeType: "application/json",

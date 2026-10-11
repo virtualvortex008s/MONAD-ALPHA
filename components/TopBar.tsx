@@ -14,16 +14,20 @@ import { MonadLogo } from "./MonadLogo";
 import { MetaMaskLogo } from "@/components/icons/MetaMaskLogo";
 import { useWallet } from "@/context/WalletContext";
 import { HeaderWalletButton } from "./HeaderWalletButton";
+import { TokenTicker } from "./TokenTicker";
+import { Token } from "@/types/token";
 export { HeaderWalletButton } from "./HeaderWalletButton";
 
 interface TopBarProps {
   onOpenSearch: () => void;
   onToggleSidebar?: () => void;
+  onSelectToken?: (token: Token) => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
   onOpenSearch,
   onToggleSidebar,
+  onSelectToken,
 }) => {
   const pathname = usePathname();
   const { isConnected, connectWallet } = useWallet();
@@ -195,6 +199,9 @@ export const TopBar: React.FC<TopBarProps> = ({
             <HeaderWalletButton />
           </div>
         </div>
+
+        {/* Dynamic Monad Testnet Token Ticker Stream */}
+        <TokenTicker onSelectToken={onSelectToken} />
 
         {/* Dismissible Sub-banner for Unconnected Users */}
         {!isBannerDismissed && !isConnected && (

@@ -1,46 +1,123 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useWallet } from "@/context/WalletContext";
 import { TokenDossierDrawer } from "@/components/TokenDossierDrawer";
+import { AiAuditModal } from "@/components/AiAuditModal";
 import { mockTokens } from "@/data/mockTokens";
 import { Token } from "@/types/token";
-import { MonadLogo } from "@/components/MonadLogo";
+import { MONAD_TESTNET_CONFIG } from "@/lib/monad";
 import { MetaMaskLogo } from "@/components/icons/MetaMaskLogo";
 import {
-  Lock,
   Sparkles,
   ShieldCheck,
-  Zap,
+  ShieldAlert,
   Search,
-  SlidersHorizontal,
   Flame,
   ArrowUpRight,
   ArrowDownRight,
+  ExternalLink,
+  Copy,
   Check,
-  ShieldAlert,
+  Clock,
+  Radio,
+  Activity,
+  Layers,
+  Zap,
+  TrendingUp,
+  BarChart3,
+  Bot,
 } from "lucide-react";
 
-export default function AlphaScannerPage() {
+type FilterTab = "ALL" | "NEW_DEPLOYMENTS" | "TOP_GAINERS" | "HIGH_VOLUME" | "LOW_RISK" | "WHALES";
+
+function AlphaScannerContent() {
+  const searchParams = useSearchParams();
+  const tokenParam = searchParams.get("token");
+
   const { isConnected, connectWallet } = useWallet();
 
   const [watchlist, setWatchlist] = useState<string[]>(() => {
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("monad_watchlist");
-      return saved ? JSON.parse(saved) : ["MONX", "ECHO"];
+      return saved ? JSON.parse(saved) : ["MONX", "CHOG", "DAK"];
     }
-    return ["MONX", "ECHO"];
+    return ["MONX", "CHOG", "DAK"];
   });
 
-  // Interactive filter state
+  const [tokens, setTokens] = useState<Token[]>(mockTokens);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filterMode, setFilterMode] = useState<"ALL" | "HIGH_ALPHA" | "SAFE" | "WHALE">("ALL");
+  const [activeTab, setActiveTab] = useState<FilterTab>("ALL");
   const [selectedToken, setSelectedToken] = useState<Token | null>(null);
+  const [auditToken, setAuditToken] = useState<Token | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAuditModalOpen, setIsAuditModalOpen] = useState(false);
+  const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
+  const [blockHeight, setBlockHeight] = useState<number>(70066720);
+  const [lastDiscoveredTime, setLastDiscoveredTime] = useState<string>("45s ago");
 
-  const handleOpenToken = (token: Token) => {
-    setSelectedToken(token);
-    setIsDrawerOpen(true);
+  // Fetch dynamic tokens stream from /api/tokens
+  useEffect(() => {
+    let ignore = false;
+
+    const fetchDynamicTokens = async () => {
+      try {
+        const res = await fetch("/api/tokens");
+        if (!res.ok) throw new Error("Failed to fetch dynamic tokens");
+        const data = await res.json();
+        if (!ignore && data?.tokens && Array.isArray(data.tokens) && data.tokens.length > 0) {
+          setTokens(data.tokens);
+          if (data.blockNumber) {
+            setBlockHeight(parseInt(data.blockNumber));
+          }
+        }
+      } catch (err) {
+        console.warn("Using fallback tokens cache:", err);
+      }
+    };
+
+    fetchDynamicTokens();
+    const interval = setInterval(fetchDynamicTokens, 15000); // 15s stream refresh
+
+    return () => {
+      ignore = true;
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Sync block number increment
+  useEffect(() => {
+    const blockTimer = setInterval(() => {
+      setBlockHeight((prev) => prev + 1);
+    }, 1200);
+
+    return () => clearInterval(blockTimer);
+  }, []);
+
+  // Handle URL token query parameter (e.g. from ticker click)
+  useEffect(() => {
+    if (!tokenParam || tokens.length === 0) return;
+
+    const clean = tokenParam.toLowerCase().replace("$", "");
+    const match = tokens.find(
+      (t) =>
+        t.address.toLowerCase() === clean ||
+        t.symbol.toLowerCase().replace("$", "") === clean ||
+        t.id.toLowerCase() === clean
+    );
+
+    if (match) {
+      setSelectedToken(match);
+      setIsDrawerOpen(true);
+    }
+  }, [tokenParam, tokens]);
+
+  const handleCopy = (address: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(address);
+    setCopiedAddress(address);
+    setTimeout(() => setCopiedAddress(null), 1800);
   };
 
   const handleToggleWatchlist = (tokenId: string) => {
@@ -53,191 +130,272 @@ export default function AlphaScannerPage() {
     });
   };
 
-  // Filtered tokens for connected users
-  const displayTokens = mockTokens.filter((token) => {
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      const match =
-        token.name.toLowerCase().includes(q) ||
-        token.symbol.toLowerCase().includes(q) ||
-        token.address.toLowerCase().includes(q);
-      if (!match) return false;
+  const handleOpenToken = (token: Token) => {
+    setSelectedToken(token);
+    setIsDrawerOpen(true);
+  };
+
+  const handleOpenAiAudit = (token: Token, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setAuditToken(token);
+    setIsAuditModalOpen(true);
+  };
+
+  // Quick stats
+  const newDeploymentsCount = useMemo(() => {
+    return tokens.filter(
+      (t) => t.isNewDeployment || t.launchTimeAgo.includes("m ago") || t.launchTimeAgo.includes("h ago")
+    ).length;
+  }, [tokens]);
+
+  // Filtering and searching logic
+  const filteredTokens = useMemo(() => {
+    let result = [...tokens];
+
+    // Search query filter (name, symbol, or address)
+    if (searchQuery.trim() !== "") {
+      const q = searchQuery.toLowerCase().replace("$", "").trim();
+      result = result.filter(
+        (t) =>
+          t.name.toLowerCase().includes(q) ||
+          t.symbol.toLowerCase().includes(q) ||
+          t.address.toLowerCase().includes(q)
+      );
     }
 
-    if (filterMode === "HIGH_ALPHA") return token.alphaScore >= 85;
-    if (filterMode === "SAFE") return token.riskScore <= 35;
-    if (filterMode === "WHALE") return token.smartWalletsCount >= 10;
-    return true;
-  });
+    // Tab filter
+    switch (activeTab) {
+      case "NEW_DEPLOYMENTS":
+        result = result
+          .filter(
+            (t) =>
+              t.isNewDeployment ||
+              t.launchTimeAgo.includes("m ago") ||
+              t.launchTimeAgo.includes("h ago")
+          )
+          .sort((a, b) => (b.deployTimestamp || 0) - (a.deployTimestamp || 0));
+        break;
+
+      case "TOP_GAINERS":
+        result = result.sort((a, b) => b.change24h - a.change24h);
+        break;
+
+      case "HIGH_VOLUME":
+        result = result.sort((a, b) => b.volume24h - a.volume24h);
+        break;
+
+      case "LOW_RISK":
+        result = result.filter((t) => t.riskScore <= 30);
+        break;
+
+      case "WHALES":
+        result = result.filter(
+          (t) => t.smartWalletsCount >= 20 || t.smartMoneyNetFlow > 200000 || t.alphaDriver.includes("Whale")
+        );
+        break;
+
+      case "ALL":
+      default:
+        break;
+    }
+
+    return result;
+  }, [tokens, searchQuery, activeTab]);
 
   return (
     <div className="space-y-6">
-      {/* Top Header Banner */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#171922] pb-6">
+      {/* 1. TOP HEADER & LIVE CONTRACT STREAM PULSE INDICATOR */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#171922] pb-6">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="flex h-2 w-2 rounded-full bg-[#00FFA3] animate-pulse" />
+          {/* Glowing Pulse Testnet Indicator */}
+          <div className="flex items-center gap-2.5">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00FFA3] opacity-80" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#00FFA3]" />
+            </span>
             <span className="text-xs font-mono font-bold tracking-widest text-[#00FFA3] uppercase">
-              Monad Alpha Scanner · DEX Radar
+              Live Deployments Stream · Monad Testnet (Chain ID 10143)
             </span>
           </div>
-          <h1 className="text-2xl font-black text-white tracking-tight mt-1">
-            Real-Time Token Radar &amp; Smart Flow
+
+          <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight mt-1.5 flex items-center gap-3">
+            <span>Alpha Scanner &amp; Contract Radar</span>
+            <span className="text-xs font-mono font-semibold px-2.5 py-1 rounded-full bg-[#7053F5]/20 text-[#7053F5] border border-[#7053F5]/30">
+              10K TPS Parallel Scanner
+            </span>
           </h1>
-          <p className="text-xs text-slate-400 mt-1 max-w-xl">
-            Live parallel execution scanner tracking early meme breakouts, smart whale accumulations, and AI risk audits on Monad Testnet.
+
+          <p className="text-xs sm:text-sm text-slate-400 mt-1 max-w-2xl leading-relaxed">
+            Real-time on-chain discovery engine continuously scanning blocks for newly deployed ERC-20 smart contracts, liquidity pairs, whale accumulation clusters, and instant Gemini 2.0 Flash AI audits.
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="rounded-xl border border-[#171922] bg-[#0D0F14] px-3.5 py-2 font-mono text-xs flex items-center gap-2">
-            <span className="text-slate-400">Total Scanned:</span>
-            <span className="text-white font-bold">{mockTokens.length} Tokens</span>
+        {/* Live Block & Stream Telemetry */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <div className="rounded-xl border border-[#171922] bg-[#0D0F14] px-3.5 py-2 font-mono text-xs flex items-center gap-2 shadow-sm">
+            <Radio className="h-3.5 w-3.5 text-[#00FFA3] animate-pulse" />
+            <span className="text-slate-400">Block:</span>
+            <span className="text-white font-bold">#{blockHeight.toLocaleString()}</span>
           </div>
-          <div className="rounded-xl border border-[#00FFA3]/30 bg-[#00FFA3]/10 px-3.5 py-2 font-mono text-xs flex items-center gap-2">
-            <span className="text-[#00FFA3] font-bold">10K TPS Parallel Engine</span>
+
+          <div className="rounded-xl border border-[#7053F5]/30 bg-[#7053F5]/10 px-3.5 py-2 font-mono text-xs flex items-center gap-2 shadow-sm">
+            <Zap className="h-3.5 w-3.5 text-[#7053F5]" />
+            <span className="text-slate-300">New Contracts:</span>
+            <span className="text-white font-bold">{newDeploymentsCount} Today</span>
+          </div>
+
+          <div className="rounded-xl border border-[#171922] bg-[#0D0F14] px-3.5 py-2 font-mono text-xs flex items-center gap-2 shadow-sm">
+            <Layers className="h-3.5 w-3.5 text-slate-400" />
+            <span className="text-slate-400">Total Scanned:</span>
+            <span className="text-white font-bold">{tokens.length} Assets</span>
           </div>
         </div>
       </div>
 
-      {/* FILTER BAR & SEARCH */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-        <div className="relative w-full sm:w-80">
+      {/* 2. SEARCH BAR & QUICK-FILTER TABS */}
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+        {/* Search Bar */}
+        <div className="relative w-full md:w-96">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter by name, symbol, or 0x address..."
-            disabled={!isConnected}
-            className="w-full bg-[#0D0F14] border border-[#171922] rounded-xl pl-10 pr-4 py-2 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-[#7053F5] transition disabled:opacity-50"
+            placeholder="Search by token name, symbol, or paste 0x address..."
+            className="w-full bg-[#0D0F14] border border-[#171922] focus:border-[#7053F5] rounded-xl pl-10 pr-4 py-2.5 text-xs font-mono text-white placeholder-slate-500 focus:outline-none transition shadow-inner"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-500 hover:text-white font-mono"
+            >
+              Clear
+            </button>
+          )}
         </div>
 
-        <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto pb-1 sm:pb-0">
+        {/* Quick Filter Tabs */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
           <button
             type="button"
-            onClick={() => setFilterMode("ALL")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
-              filterMode === "ALL"
-                ? "bg-[#7053F5] text-white shadow-md shadow-[#7053F5]/30 font-bold"
+            onClick={() => setActiveTab("ALL")}
+            className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === "ALL"
+                ? "bg-[#7053F5] text-white shadow-lg shadow-[#7053F5]/30"
                 : "bg-[#0D0F14] text-slate-400 hover:text-white border border-[#171922]"
             }`}
           >
-            All Pools
+            <span>All Assets</span>
+            <span className="text-[10px] opacity-75">({tokens.length})</span>
           </button>
+
           <button
             type="button"
-            onClick={() => setFilterMode("HIGH_ALPHA")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
-              filterMode === "HIGH_ALPHA"
-                ? "bg-[#7053F5] text-white shadow-md shadow-[#7053F5]/30 font-bold"
+            onClick={() => setActiveTab("NEW_DEPLOYMENTS")}
+            className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === "NEW_DEPLOYMENTS"
+                ? "bg-[#00FFA3] text-black shadow-lg shadow-[#00FFA3]/30"
                 : "bg-[#0D0F14] text-slate-400 hover:text-white border border-[#171922]"
             }`}
           >
-            Alpha ≥ 85
+            <Clock className="w-3.5 h-3.5" />
+            <span>New Deployments</span>
+            <span className="text-[10px] px-1.5 py-0.2 rounded bg-black/20 font-mono font-bold">
+              {newDeploymentsCount}
+            </span>
           </button>
+
           <button
             type="button"
-            onClick={() => setFilterMode("SAFE")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
-              filterMode === "SAFE"
-                ? "bg-[#00FFA3] text-black shadow-md shadow-[#00FFA3]/30 font-bold"
+            onClick={() => setActiveTab("TOP_GAINERS")}
+            className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === "TOP_GAINERS"
+                ? "bg-[#7053F5] text-white shadow-lg shadow-[#7053F5]/30"
                 : "bg-[#0D0F14] text-slate-400 hover:text-white border border-[#171922]"
             }`}
           >
-            Low Rug Risk
+            <TrendingUp className="w-3.5 h-3.5 text-[#00FFA3]" />
+            <span>Top Gainers</span>
           </button>
+
           <button
             type="button"
-            onClick={() => setFilterMode("WHALE")}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
-              filterMode === "WHALE"
-                ? "bg-[#7053F5] text-white shadow-md shadow-[#7053F5]/30 font-bold"
+            onClick={() => setActiveTab("HIGH_VOLUME")}
+            className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === "HIGH_VOLUME"
+                ? "bg-[#7053F5] text-white shadow-lg shadow-[#7053F5]/30"
                 : "bg-[#0D0F14] text-slate-400 hover:text-white border border-[#171922]"
             }`}
           >
-            Whale Inflow ≥ 10
+            <BarChart3 className="w-3.5 h-3.5" />
+            <span>High Volume</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("LOW_RISK")}
+            className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === "LOW_RISK"
+                ? "bg-[#7053F5] text-white shadow-lg shadow-[#7053F5]/30"
+                : "bg-[#0D0F14] text-slate-400 hover:text-white border border-[#171922]"
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5 text-[#00FFA3]" />
+            <span>Low Risk</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("WHALES")}
+            className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === "WHALES"
+                ? "bg-[#7053F5] text-white shadow-lg shadow-[#7053F5]/30"
+                : "bg-[#0D0F14] text-slate-400 hover:text-white border border-[#171922]"
+            }`}
+          >
+            <span>Whale Inflows</span>
           </button>
         </div>
       </div>
 
-      {/* MAIN RADAR TABLE CONTAINER */}
+      {/* 3. RADAR TOKEN DIRECTORY TABLE */}
       <div className="relative rounded-2xl border border-[#171922] bg-[#0D0F14] shadow-2xl overflow-hidden">
-        {/* LOCK SCREEN OVERLAY FOR UNCONNECTED USERS */}
-        {!isConnected && (
-          <div className="absolute inset-0 z-20 flex items-center justify-center p-4 bg-[#060709]/80 backdrop-blur-md">
-            <div className="w-full max-w-md rounded-2xl border border-[#7053F5]/30 bg-[#0D0F14] p-6 sm:p-8 shadow-2xl text-center space-y-5 animate-in fade-in zoom-in-95 duration-200">
-              <div className="w-14 h-14 rounded-2xl bg-[#7053F5]/20 border border-[#7053F5]/40 flex items-center justify-center mx-auto shadow-[0_0_20px_rgba(112,83,245,0.35)]">
-                <Lock className="w-6 h-6 text-[#7053F5]" />
-              </div>
-
-              <div>
-                <h3 className="text-lg font-bold text-white tracking-tight">
-                  Connect MetaMask to Unlock Alpha Scanner
-                </h3>
-                <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                  Real-time whale accumulation filters, volume anomaly alerts, and Gemini 2.0 Flash AI dossiers are unlocked upon connecting MetaMask to Monad Testnet.
-                </p>
-              </div>
-
-              <div className="p-3.5 rounded-xl bg-[#060709] border border-[#171922] text-left text-xs font-mono space-y-2 text-slate-300">
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 text-[#00FFA3] shrink-0" />
-                  <span>Unlimited Gemini 2.0 Flash AI Dossiers</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-3.5 h-3.5 text-[#00FFA3] shrink-0" />
-                  <span>Automated Honeypot &amp; Rug Risk Audits</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Zap className="w-3.5 h-3.5 text-[#7053F5] shrink-0" />
-                  <span>Live DEX Liquidity Inflows (Monad Testnet)</span>
-                </div>
-              </div>
-
-              <div className="pt-1">
-                <button
-                  type="button"
-                  onClick={connectWallet}
-                  className="w-full py-3 rounded-xl bg-[#7053F5] hover:bg-[#5E3FEB] text-white font-bold text-xs shadow-lg shadow-[#7053F5]/30 transition flex items-center justify-center gap-2 cursor-pointer active:scale-98"
-                >
-                  <MetaMaskLogo size={18} />
-                  <span>Connect MetaMask Wallet</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* SCANNER TABLE PREVIEW (Blurred underneath when disconnected) */}
-        <div className={`p-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 ${!isConnected ? "filter blur-sm select-none pointer-events-none" : ""}`}>
-          <table className="w-full min-w-[650px] text-left text-xs font-mono">
-            <thead className="border-b border-[#171922] text-slate-500 uppercase text-[10px] tracking-wider">
+        <div className="p-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+          <table className="w-full min-w-[900px] text-left text-xs font-mono">
+            <thead className="border-b border-[#171922] bg-[#0A0C11]/80 text-slate-400 uppercase text-[10px] tracking-wider">
               <tr>
+                <th className="p-3 w-8 text-center">★</th>
                 <th className="p-3">Asset</th>
-                <th className="p-3">Price / 1h</th>
+                <th className="p-3">Price / 24h Change</th>
+                <th className="p-3">Deployed</th>
                 <th className="p-3">Alpha Score</th>
-                <th className="p-3">Smart Money Flow</th>
-                <th className="p-3">Risk Level</th>
-                <th className="p-3 text-right">Action</th>
+                <th className="p-3">24h Volume / Liq</th>
+                <th className="p-3">Risk Assessment</th>
+                <th className="p-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#171922]">
-              {/* If connected, show full filtered tokens. If disconnected, render preview rows */}
-              {(isConnected ? displayTokens : mockTokens.slice(0, 5)).map((token) => {
-                const isPositive1h = token.change1h >= 0;
-                const isSaved = watchlist.includes(token.id);
+              {filteredTokens.length === 0 ? (
+                <tr>
+                  <td colSpan={8} className="py-12 text-center text-slate-500 font-mono">
+                    No tokens found matching &quot;{searchQuery}&quot;. Try pasting a valid contract address.
+                  </td>
+                </tr>
+              ) : (
+                filteredTokens.map((token) => {
+                  const isPositive24h = token.change24h >= 0;
+                  const isSaved = watchlist.includes(token.id);
+                  const isNew = token.isNewDeployment || token.launchTimeAgo.includes("m ago");
 
-                return (
-                  <tr
-                    key={token.id}
-                    onClick={() => isConnected && handleOpenToken(token)}
-                    className="hover:bg-[#13161F]/60 transition-colors cursor-pointer group"
-                  >
-                    {/* Token Icon & Symbol */}
-                    <td className="p-3">
-                      <div className="flex items-center gap-3">
+                  return (
+                    <tr
+                      key={token.id}
+                      onClick={() => handleOpenToken(token)}
+                      className="hover:bg-[#13161F]/80 transition-colors cursor-pointer group"
+                    >
+                      {/* Watchlist Star */}
+                      <td className="p-3 text-center">
                         <button
                           type="button"
                           onClick={(e) => {
@@ -251,98 +409,172 @@ export default function AlphaScannerPage() {
                         >
                           ★
                         </button>
-                        <div className="w-8 h-8 rounded-lg bg-[#7053F5]/10 border border-[#7053F5]/30 flex items-center justify-center font-bold text-white text-xs">
-                          {token.symbol.slice(0, 2)}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="font-bold text-white group-hover:text-[#7053F5] transition">
-                              ${token.symbol}
-                            </span>
-                            <span className="text-[10px] text-slate-500">{token.name}</span>
+                      </td>
+
+                      {/* Token Asset & Address */}
+                      <td className="p-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#7053F5]/20 to-[#12141C] border border-[#7053F5]/30 flex items-center justify-center font-bold text-white text-xs shrink-0 group-hover:border-[#7053F5] transition">
+                            {token.symbol.replace("$", "").slice(0, 3)}
                           </div>
-                          <span className="text-[10px] text-slate-500 font-mono">
-                            {token.address.slice(0, 6)}...{token.address.slice(-4)}
+                          <div>
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-bold text-white text-sm group-hover:text-[#7053F5] transition">
+                                {token.symbol}
+                              </span>
+                              <span className="text-[11px] text-slate-400 font-sans truncate max-w-[130px]">
+                                {token.name}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5 mt-0.5">
+                              <span className="text-[10px] text-slate-500 font-mono">
+                                {token.address.slice(0, 6)}...{token.address.slice(-4)}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={(e) => handleCopy(token.address, e)}
+                                className="text-slate-500 hover:text-white p-0.5 rounded transition"
+                                title="Copy contract address"
+                              >
+                                {copiedAddress === token.address ? (
+                                  <Check className="w-3 h-3 text-[#00FFA3]" />
+                                ) : (
+                                  <Copy className="w-3 h-3" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </td>
+
+                      {/* Price and 24h / 1h Change */}
+                      <td className="p-3">
+                        <div className="text-white font-bold text-sm block">
+                          ${(token.priceUsd ?? token.price ?? 0) >= 1
+                            ? (token.priceUsd ?? token.price ?? 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 4 })
+                            : (token.priceUsd ?? token.price ?? 0).toFixed(6)}
+                        </div>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span
+                            className={`text-[10px] font-bold flex items-center gap-0.5 ${
+                              isPositive24h ? "text-[#00FFA3]" : "text-[#FF4D4D]"
+                            }`}
+                          >
+                            {isPositive24h ? (
+                              <ArrowUpRight className="w-3 h-3" />
+                            ) : (
+                              <ArrowDownRight className="w-3 h-3" />
+                            )}
+                            {token.change24h > 0 ? "+" : ""}
+                            {token.change24h}% 24h
+                          </span>
+                          <span className="text-[9px] text-slate-500">
+                            ({token.change1h > 0 ? "+" : ""}{token.change1h}% 1h)
                           </span>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    {/* Price and 1h Change */}
-                    <td className="p-3">
-                      <span className="text-white font-bold block">${token.priceUsd.toFixed(4)}</span>
-                      <span
-                        className={`text-[10px] flex items-center gap-0.5 ${
-                          isPositive1h ? "text-[#00FFA3]" : "text-rose-400"
-                        }`}
-                      >
-                        {isPositive1h ? (
-                          <ArrowUpRight className="w-3 h-3" />
-                        ) : (
-                          <ArrowDownRight className="w-3 h-3" />
-                        )}
-                        {token.change1h > 0 ? "+" : ""}
-                        {token.change1h}%
-                      </span>
-                    </td>
-
-                    {/* Alpha Score with Glow */}
-                    <td className="p-3">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#7053F5]/10 border border-[#7053F5]/30 text-[#7053F5] font-bold">
-                        <Flame className="w-3.5 h-3.5 text-[#00FFA3]" />
-                        <span>{token.alphaScore} / 100</span>
-                      </div>
-                      <span className="block text-[10px] text-slate-500 mt-0.5">
-                        {token.alphaDriver}
-                      </span>
-                    </td>
-
-                    {/* Smart Money Accumulators */}
-                    <td className="p-3">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-white font-bold">{token.smartWalletsCount} Smart Wallets</span>
-                      </div>
-                      <span className="text-[10px] text-slate-400 block">
-                        {(token.volume24h / 1000).toFixed(0)}k MON 24h Vol
-                      </span>
-                    </td>
-
-                    {/* Honeypot & Rug Risk */}
-                    <td className="p-3">
-                      <div className="flex items-center gap-1.5">
-                        {token.riskScore <= 35 ? (
-                          <span className="flex items-center gap-1 text-[#00FFA3] text-xs font-bold">
-                            <ShieldCheck className="w-3.5 h-3.5" />
-                            Low Risk ({token.riskScore})
+                      {/* Deployment Timestamp / Marker */}
+                      <td className="p-3">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-slate-300 font-mono text-xs font-semibold">
+                            {token.launchTimeAgo}
                           </span>
-                        ) : (
-                          <span className="flex items-center gap-1 text-amber-400 text-xs font-bold">
-                            <ShieldAlert className="w-3.5 h-3.5" />
-                            Moderate ({token.riskScore})
-                          </span>
-                        )}
-                      </div>
-                      <span className="text-[10px] text-slate-500 block truncate max-w-[140px]">
-                        {token.riskFactors[0] || "Audit Passed"}
-                      </span>
-                    </td>
+                          {isNew && (
+                            <span className="px-1.5 py-0.5 rounded text-[9px] font-mono font-bold bg-[#7053F5]/20 text-[#7053F5] border border-[#7053F5]/30 uppercase animate-pulse">
+                              NEW
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-slate-500 block">
+                          Monad Testnet
+                        </span>
+                      </td>
 
-                    {/* Action Button */}
-                    <td className="p-3 text-right">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleOpenToken(token);
-                        }}
-                        className="px-3 py-1.5 rounded-lg bg-[#7053F5]/20 hover:bg-[#7053F5] text-white text-xs font-bold transition cursor-pointer"
-                      >
-                        Inspect Dossier →
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
+                      {/* Alpha Score with Driver */}
+                      <td className="p-3">
+                        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#7053F5]/10 border border-[#7053F5]/30 text-[#7053F5] font-bold">
+                          <Flame className="w-3.5 h-3.5 text-[#00FFA3]" />
+                          <span>{token.alphaScore} / 100</span>
+                        </div>
+                        <span className="block text-[10px] text-slate-400 mt-1 truncate max-w-[130px]">
+                          {token.alphaDriver}
+                        </span>
+                      </td>
+
+                      {/* 24h Volume and Pool Liquidity */}
+                      <td className="p-3">
+                        <div className="text-white font-bold">
+                          ${(token.volume24h / 1000).toFixed(0)}k Vol
+                        </div>
+                        <div className="text-[10px] text-slate-400 mt-0.5">
+                          ${(token.liquidity / 1000).toFixed(0)}k Liq · {token.lpStatus.slice(0, 10)}
+                        </div>
+                      </td>
+
+                      {/* Risk Level Badge */}
+                      <td className="p-3">
+                        <div className="flex items-center gap-1.5">
+                          {token.riskScore <= 35 ? (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[#00FFA3] bg-[#00FFA3]/10 border border-[#00FFA3]/20 text-[11px] font-bold">
+                              <ShieldCheck className="w-3.5 h-3.5" />
+                              <span>Safe ({token.riskScore})</span>
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-amber-400 bg-amber-400/10 border border-amber-400/20 text-[11px] font-bold">
+                              <ShieldAlert className="w-3.5 h-3.5" />
+                              <span>Moderate ({token.riskScore})</span>
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-slate-500 block truncate max-w-[120px] mt-1">
+                          {token.riskFactors[0] || "Audit Verified"}
+                        </span>
+                      </td>
+
+                      {/* Actions: AI Audit & Inspect on Explorer */}
+                      <td className="p-3 text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          {/* AI Audit Button */}
+                          <button
+                            type="button"
+                            onClick={(e) => handleOpenAiAudit(token, e)}
+                            className="px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-[#7053F5]/20 to-[#7053F5]/35 hover:from-[#7053F5] hover:to-[#5E3FEB] text-white text-[11px] font-bold border border-[#7053F5]/40 transition flex items-center gap-1 cursor-pointer active:scale-95 shadow-sm"
+                            title="Generate instant 2-sentence Gemini risk audit"
+                          >
+                            <Sparkles className="w-3 h-3 text-[#00FFA3]" />
+                            <span>AI Audit</span>
+                          </button>
+
+                          {/* Inspect on Explorer Button */}
+                          <a
+                            href={`${MONAD_TESTNET_CONFIG.blockExplorer}/token/${token.address}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="p-1.5 rounded-lg border border-[#171922] bg-[#0A0C11] hover:bg-[#1A1E29] hover:border-slate-600 text-slate-400 hover:text-white transition flex items-center justify-center cursor-pointer"
+                            title="Inspect contract on Monad Explorer"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+
+                          {/* Full Dossier Arrow */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleOpenToken(token);
+                            }}
+                            className="hidden sm:inline-flex px-2 py-1.5 rounded-lg bg-[#13161F] hover:bg-[#1E2230] text-slate-300 hover:text-white text-[11px] font-bold transition cursor-pointer"
+                          >
+                            Dossier →
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
@@ -356,6 +588,31 @@ export default function AlphaScannerPage() {
         isWatchlisted={selectedToken ? watchlist.includes(selectedToken.id) : false}
         onToggleWatchlist={handleToggleWatchlist}
       />
+
+      {/* Instant Gemini AI Risk Audit Modal */}
+      <AiAuditModal
+        token={auditToken}
+        isOpen={isAuditModalOpen}
+        onClose={() => setIsAuditModalOpen(false)}
+        onOpenFullDossier={handleOpenToken}
+      />
     </div>
+  );
+}
+
+export default function AlphaScannerPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="w-full py-16 flex items-center justify-center font-mono text-slate-500 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full bg-[#00FFA3] animate-pulse" />
+            <span>Loading Monad Alpha Scanner...</span>
+          </div>
+        </div>
+      }
+    >
+      <AlphaScannerContent />
+    </Suspense>
   );
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { findTokenByAddressOrSymbol } from "@/lib/tokens";
 import { mockTokens } from "@/data/mockTokens";
 import { generateTokenIntelligence } from "@/lib/gemini";
 import { getMonadBlockNumber } from "@/lib/monad";
@@ -11,13 +12,18 @@ export async function GET(
     const { address } = await context.params;
     const cleanAddress = address.toLowerCase();
 
-    // Find token by address or symbol or id
-    const token = mockTokens.find(
-      (t) =>
-        t.address.toLowerCase() === cleanAddress ||
-        t.symbol.toLowerCase().replace("$", "") === cleanAddress ||
-        t.id.toLowerCase() === cleanAddress
-    );
+    // Find token by address or symbol or id in dynamic registry
+    let token = await findTokenByAddressOrSymbol(cleanAddress);
+
+    // Fallback to mockTokens if not found in dynamic registry
+    if (!token) {
+      token = mockTokens.find(
+        (t) =>
+          t.address.toLowerCase() === cleanAddress ||
+          t.symbol.toLowerCase().replace("$", "") === cleanAddress ||
+          t.id.toLowerCase() === cleanAddress
+      ) || null;
+    }
 
     if (!token) {
       return NextResponse.json(

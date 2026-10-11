@@ -16,6 +16,20 @@ export const ClientShell: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  const [tokens, setTokens] = useState<Token[]>(mockTokens);
+
+  // Sync dynamic tokens for global search modal
+  useEffect(() => {
+    fetch("/api/tokens")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data?.tokens && Array.isArray(data.tokens) && data.tokens.length > 0) {
+          setTokens(data.tokens);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Global ⌘K / Ctrl+K listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -29,7 +43,7 @@ export const ClientShell: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, []);
 
   const handleSelectToken = (token: Token) => {
-    router.push(`/token/${token.address}`);
+    router.push(`/alpha-scanner?token=${encodeURIComponent(token.address)}`);
   };
 
   const isLandingPage = pathname === "/landing";
@@ -42,7 +56,7 @@ export const ClientShell: React.FC<{ children: ReactNode }> = ({ children }) => 
         <SearchModal
           isOpen={isSearchOpen}
           onClose={() => setIsSearchOpen(false)}
-          tokens={mockTokens}
+          tokens={tokens}
           onSelectToken={handleSelectToken}
         />
         <FloatingHandbook />
@@ -63,6 +77,7 @@ export const ClientShell: React.FC<{ children: ReactNode }> = ({ children }) => 
         <TopBar
           onOpenSearch={() => setIsSearchOpen(true)}
           onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
+          onSelectToken={(t) => router.push(`/alpha-scanner?token=${encodeURIComponent(t.address)}`)}
         />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto">
           {children}
@@ -73,7 +88,7 @@ export const ClientShell: React.FC<{ children: ReactNode }> = ({ children }) => 
       <SearchModal
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        tokens={mockTokens}
+        tokens={tokens}
         onSelectToken={handleSelectToken}
       />
       <FloatingHandbook />

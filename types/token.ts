@@ -29,6 +29,7 @@ export interface Token {
   address: string;
   priceUsd: number;
   priceMon: number;
+  price?: number;
   change1h: number;
   change24h: number;
   volume24h: number;
@@ -46,6 +47,10 @@ export interface Token {
   deployerAddress: string;
   catalysts: string[];
   launchTimeAgo: string;
+  deployTimestamp?: number;
+  explorerUrl?: string;
+  isNewDeployment?: boolean;
+  verified?: boolean;
   isWatchlist?: boolean;
   candles5m: CandleData[];
   candles15m: CandleData[];

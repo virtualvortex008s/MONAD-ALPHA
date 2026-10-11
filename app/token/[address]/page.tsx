@@ -33,20 +33,18 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
   const resolvedParams = use(params);
   const tokenAddress = resolvedParams.address.toLowerCase();
 
-  // Find token by address or id or symbol
-  const foundToken = mockTokens.find(
+  // Initial fallback resolution
+  const initialToken: Token = mockTokens.find(
     (t) =>
       t.address.toLowerCase() === tokenAddress ||
       t.id.toLowerCase() === tokenAddress ||
       t.symbol.toLowerCase().replace("$", "") === tokenAddress
-  );
-
-  // Fallback to first token if not found
-  const token: Token = foundToken || {
+  ) || {
     ...mockTokens[0],
     address: tokenAddress.startsWith("0x") ? tokenAddress : mockTokens[0].address,
   };
 
+  const [token, setToken] = useState<Token>(initialToken);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [swapAmount, setSwapAmount] = useState<string>("0.05");
   const [isSwapping, setIsSwapping] = useState(false);
@@ -55,12 +53,32 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
   const [swapError, setSwapError] = useState<string | null>(null);
   const [isAiRefreshing, setIsAiRefreshing] = useState(false);
   const [aiReport, setAiReport] = useState<TokenIntelligenceReport>({
-    aiSummary: token.aiSummary,
-    keyCatalysts: token.catalysts,
-    riskAlerts: token.riskFactors,
-    tokenPhase: token.alphaScore > 85 ? "Breakout" : "Accumulation",
+    aiSummary: initialToken.aiSummary,
+    keyCatalysts: initialToken.catalysts,
+    riskAlerts: initialToken.riskFactors,
+    tokenPhase: initialToken.alphaScore > 85 ? "Breakout" : "Accumulation",
     buyerSellerVerdict: "Organic buyers outnumber sellers (3.4:1 ratio).",
   });
+
+  // Fetch token details from dynamic token API
+  useEffect(() => {
+    let ignore = false;
+    fetch(`/api/tokens/${tokenAddress}`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (!ignore && data?.token) {
+          setToken(data.token);
+          if (data.intelligence) {
+            setAiReport(data.intelligence);
+          }
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      ignore = true;
+    };
+  }, [tokenAddress]);
 
   useEffect(() => {
     let ignore = false;
