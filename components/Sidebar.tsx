@@ -12,16 +12,20 @@ import {
   X,
   Radio,
   Fuel,
+  Star,
 } from "lucide-react";
 import { openHandbook } from "./FloatingHandbook";
+import { useFavorites } from "@/hooks/useFavorites";
 
 interface SidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
+  onOpenFavorites?: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onOpenFavorites }) => {
   const pathname = usePathname();
+  const { favoritesCount } = useFavorites();
 
   const isRouteActive = (path: string, exact: boolean = false) => {
     if (exact) return pathname === path;
@@ -150,6 +154,32 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   ON-CHAIN
                 </span>
               </Link>
+
+              {/* Favorites Drawer Trigger */}
+              <button
+                type="button"
+                onClick={() => {
+                  if (onClose) onClose();
+                  if (onOpenFavorites) onOpenFavorites();
+                }}
+                className={`w-full text-left ${navItemClass(false)}`}
+              >
+                <div className="flex items-center gap-3">
+                  <Star
+                    className={`h-4 w-4 ${
+                      favoritesCount > 0
+                        ? "fill-[#F5A623] text-[#F5A623]"
+                        : "text-slate-400 group-hover:text-[#F5A623]"
+                    }`}
+                  />
+                  <span>Favorite Assets</span>
+                </div>
+                {favoritesCount > 0 && (
+                  <span className="rounded bg-[#00FFA3]/15 border border-[#00FFA3]/30 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#00FFA3]">
+                    {favoritesCount}
+                  </span>
+                )}
+              </button>
 
               {/* Interactive Handbook Trigger */}
               <button

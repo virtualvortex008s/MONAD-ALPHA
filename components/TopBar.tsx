@@ -9,10 +9,12 @@ import {
   Menu,
   X,
   ArrowRight,
+  Star,
 } from "lucide-react";
 import { MonadLogo } from "./MonadLogo";
 import { MetaMaskLogo } from "@/components/icons/MetaMaskLogo";
 import { useWallet } from "@/context/WalletContext";
+import { useFavorites } from "@/hooks/useFavorites";
 import { HeaderWalletButton } from "./HeaderWalletButton";
 import { TokenTicker } from "./TokenTicker";
 import { Token } from "@/types/token";
@@ -20,17 +22,20 @@ export { HeaderWalletButton } from "./HeaderWalletButton";
 
 interface TopBarProps {
   onOpenSearch: () => void;
+  onOpenFavorites?: () => void;
   onToggleSidebar?: () => void;
   onSelectToken?: (token: Token) => void;
 }
 
 export const TopBar: React.FC<TopBarProps> = ({
   onOpenSearch,
+  onOpenFavorites,
   onToggleSidebar,
   onSelectToken,
 }) => {
   const pathname = usePathname();
   const { isConnected, connectWallet } = useWallet();
+  const { favoritesCount } = useFavorites();
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isBannerDismissed, setIsBannerDismissed] = useState(false);
 
@@ -107,6 +112,29 @@ export const TopBar: React.FC<TopBarProps> = ({
               <span className="hidden md:inline-flex items-center rounded border border-[#1E2230] bg-[#171922] px-1.5 py-0.5 text-[10px] font-mono text-slate-400">
                 ⌘K
               </span>
+            </button>
+
+            {/* Favorites Navigation Button */}
+            <button
+              type="button"
+              onClick={onOpenFavorites}
+              className="relative flex items-center gap-1.5 rounded-xl border border-[#171922] bg-[#0D0F14] p-2 sm:px-3 sm:py-1.5 text-xs text-slate-300 hover:border-[#F5A623]/50 hover:text-white transition shadow-sm cursor-pointer group"
+              aria-label="Open favorite assets panel"
+              title="Favorite Assets"
+            >
+              <Star
+                className={`h-4 w-4 sm:h-3.5 sm:w-3.5 transition-colors ${
+                  favoritesCount > 0
+                    ? "fill-[#F5A623] text-[#F5A623]"
+                    : "text-[#4A5568] group-hover:text-[#F5A623]"
+                }`}
+              />
+              <span className="hidden sm:inline font-mono">Favorites</span>
+              {favoritesCount > 0 && (
+                <span className="inline-flex items-center justify-center rounded-full bg-[#00FFA3]/15 border border-[#00FFA3]/30 px-1.5 py-0.2 text-[10px] font-mono font-bold text-[#00FFA3]">
+                  {favoritesCount}
+                </span>
+              )}
             </button>
 
             {/* Live Signals & Notifications Bell */}

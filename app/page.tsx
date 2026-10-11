@@ -24,16 +24,17 @@ import {
   Radio,
   Layers,
 } from "lucide-react";
+import { useFavorites } from "@/hooks/useFavorites";
 
 function DashboardContent() {
   const searchParams = useSearchParams();
   const initialWatchlistOnly = searchParams.get("watchlist") === "true";
 
+  const { isFavorite, toggleFavorite, favoritesCount } = useFavorites();
   const [tokens] = useState<Token[]>(mockTokens);
   const [currentFilter, setCurrentFilter] = useState<FilterCategory>("ALL");
   const [selectedToken, setSelectedToken] = useState<Token | null>(mockTokens[0]);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
-  const [watchlist, setWatchlist] = useState<string[]>(["chog", "monx", "spire"]);
   const [showWatchlistOnly, setShowWatchlistOnly] = useState<boolean>(initialWatchlistOnly);
   const [activeStreamTab, setActiveStreamTab] = useState<"BLOCKS" | "SMART_MONEY">("BLOCKS");
   const [blockHeight, setBlockHeight] = useState<number>(61449520);
@@ -89,9 +90,12 @@ function DashboardContent() {
   }, []);
 
   const handleToggleWatchlist = (tokenId: string) => {
-    setWatchlist((prev) =>
-      prev.includes(tokenId) ? prev.filter((id) => id !== tokenId) : [...prev, tokenId]
+    const target = tokens.find(
+      (t) => t.id === tokenId || t.address.toLowerCase() === tokenId.toLowerCase()
     );
+    if (target) {
+      toggleFavorite(target);
+    }
   };
 
   const handleSelectToken = (token: Token) => {
@@ -109,12 +113,12 @@ function DashboardContent() {
     }
   };
 
-  // Filter tokens based on category and watchlist
+  // Filter tokens based on category and favorites
   const filteredTokens = useMemo(() => {
     let result = [...tokens];
 
     if (showWatchlistOnly) {
-      result = result.filter((t) => watchlist.includes(t.id));
+      result = result.filter((t) => isFavorite(t.address) || isFavorite(t.id));
     }
 
     switch (currentFilter) {
@@ -145,7 +149,7 @@ function DashboardContent() {
     }
 
     return result;
-  }, [tokens, currentFilter, showWatchlistOnly, watchlist]);
+  }, [tokens, currentFilter, showWatchlistOnly, isFavorite]);
 
   // Specific 4 trending tokens from Figma design
   const trendingTokens = useMemo(() => {
@@ -443,120 +447,224 @@ function DashboardContent() {
         {/* Horizontal Grid of 4 Token Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {/* Card 1: $MONX (MonadFi) */}
-          <div
-            onClick={() => handleSelectTokenBySymbol("MONX")}
-            className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 hover:border-[#7053F5]/60 hover:bg-[#13161F] transition cursor-pointer shadow-lg group"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#7053F5]/20 text-[#7053F5] font-bold text-xs border border-[#7053F5]/40 group-hover:scale-105 transition-transform">
-                  MX
+          {(() => {
+            const tokenObj = tokens.find(
+              (t) => t.symbol.toLowerCase().replace("$", "") === "monx" || t.id.toLowerCase() === "monx"
+            );
+            const isSaved = tokenObj ? isFavorite(tokenObj.address || tokenObj.id) : false;
+            return (
+              <div
+                onClick={() => handleSelectTokenBySymbol("MONX")}
+                className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 hover:border-[#7053F5]/60 hover:bg-[#13161F] transition cursor-pointer shadow-lg group relative"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#7053F5]/20 text-[#7053F5] font-bold text-xs border border-[#7053F5]/40 group-hover:scale-105 transition-transform">
+                      MX
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="font-bold text-sm text-white group-hover:text-[#7053F5] transition-colors">
+                          $MONX
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (tokenObj) toggleFavorite(tokenObj);
+                          }}
+                          className="p-1 rounded-md hover:bg-[#171922] transition cursor-pointer"
+                          title={isSaved ? "Remove from favorites" : "Add to favorites"}
+                          aria-label={isSaved ? "Remove from favorites" : "Add to favorites"}
+                        >
+                          <Star
+                            className={`h-3.5 w-3.5 transition-colors ${
+                              isSaved ? "fill-[#F5A623] text-[#F5A623]" : "text-[#4A5568] hover:text-[#F5A623]"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                      <span className="text-[11px] text-slate-400">MonadFi</span>
+                    </div>
+                  </div>
+                  <ScoreGauge score={88} size={44} strokeWidth={3.5} />
                 </div>
-                <div>
-                  <h3 className="font-bold text-sm text-white group-hover:text-[#7053F5] transition-colors">
-                    $MONX
-                  </h3>
-                  <span className="text-[11px] text-slate-400">MonadFi</span>
-                </div>
-              </div>
-              <ScoreGauge score={88} size={44} strokeWidth={3.5} />
-            </div>
 
-            <div className="mt-3 pt-3 border-t border-[#171922] flex items-center justify-between">
-              <div>
-                <span className="text-sm font-bold text-white font-mono">$0.0842</span>
-                <span className="text-[10px] font-mono text-[#00FFA3] font-bold ml-1.5">+18.4%</span>
+                <div className="mt-3 pt-3 border-t border-[#171922] flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-bold text-white font-mono">$0.0842</span>
+                    <span className="text-[10px] font-mono text-[#00FFA3] font-bold ml-1.5">+18.4%</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500 uppercase">Vol $1.4M</span>
+                </div>
               </div>
-              <span className="text-[10px] font-mono text-slate-500 uppercase">Vol $1.4M</span>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Card 2: $ECHO (EchoNet) */}
-          <div
-            onClick={() => handleSelectTokenBySymbol("ECHO")}
-            className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 hover:border-[#00FFA3]/60 hover:bg-[#13161F] transition cursor-pointer shadow-lg group"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#00FFA3]/20 text-[#00FFA3] font-bold text-xs border border-[#00FFA3]/40 group-hover:scale-105 transition-transform">
-                  EC
+          {(() => {
+            const tokenObj = tokens.find(
+              (t) => t.symbol.toLowerCase().replace("$", "") === "echo" || t.id.toLowerCase() === "echo"
+            );
+            const isSaved = tokenObj ? isFavorite(tokenObj.address || tokenObj.id) : false;
+            return (
+              <div
+                onClick={() => handleSelectTokenBySymbol("ECHO")}
+                className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 hover:border-[#00FFA3]/60 hover:bg-[#13161F] transition cursor-pointer shadow-lg group relative"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#00FFA3]/20 text-[#00FFA3] font-bold text-xs border border-[#00FFA3]/40 group-hover:scale-105 transition-transform">
+                      EC
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="font-bold text-sm text-white group-hover:text-[#00FFA3] transition-colors">
+                          $ECHO
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (tokenObj) toggleFavorite(tokenObj);
+                          }}
+                          className="p-1 rounded-md hover:bg-[#171922] transition cursor-pointer"
+                          title={isSaved ? "Remove from favorites" : "Add to favorites"}
+                          aria-label={isSaved ? "Remove from favorites" : "Add to favorites"}
+                        >
+                          <Star
+                            className={`h-3.5 w-3.5 transition-colors ${
+                              isSaved ? "fill-[#F5A623] text-[#F5A623]" : "text-[#4A5568] hover:text-[#F5A623]"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                      <span className="text-[11px] text-slate-400">EchoNet</span>
+                    </div>
+                  </div>
+                  <ScoreGauge score={91} size={44} strokeWidth={3.5} />
                 </div>
-                <div>
-                  <h3 className="font-bold text-sm text-white group-hover:text-[#00FFA3] transition-colors">
-                    $ECHO
-                  </h3>
-                  <span className="text-[11px] text-slate-400">EchoNet</span>
-                </div>
-              </div>
-              <ScoreGauge score={91} size={44} strokeWidth={3.5} />
-            </div>
 
-            <div className="mt-3 pt-3 border-t border-[#171922] flex items-center justify-between">
-              <div>
-                <span className="text-sm font-bold text-white font-mono">$0.00170</span>
-                <span className="text-[10px] font-mono text-[#00FFA3] font-bold ml-1.5">+33.2%</span>
+                <div className="mt-3 pt-3 border-t border-[#171922] flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-bold text-white font-mono">$0.00170</span>
+                    <span className="text-[10px] font-mono text-[#00FFA3] font-bold ml-1.5">+33.2%</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500 uppercase">Vol $820K</span>
+                </div>
               </div>
-              <span className="text-[10px] font-mono text-slate-500 uppercase">Vol $820K</span>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Card 3: $FLUX (FluxDAO) */}
-          <div
-            onClick={() => handleSelectTokenBySymbol("FLUX")}
-            className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 hover:border-[#F59E0B]/60 hover:bg-[#13161F] transition cursor-pointer shadow-lg group"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#F59E0B]/20 text-[#F59E0B] font-bold text-xs border border-[#F59E0B]/40 group-hover:scale-105 transition-transform">
-                  FX
+          {(() => {
+            const tokenObj = tokens.find(
+              (t) => t.symbol.toLowerCase().replace("$", "") === "flux" || t.id.toLowerCase() === "flux"
+            );
+            const isSaved = tokenObj ? isFavorite(tokenObj.address || tokenObj.id) : false;
+            return (
+              <div
+                onClick={() => handleSelectTokenBySymbol("FLUX")}
+                className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 hover:border-[#F59E0B]/60 hover:bg-[#13161F] transition cursor-pointer shadow-lg group relative"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#F59E0B]/20 text-[#F59E0B] font-bold text-xs border border-[#F59E0B]/40 group-hover:scale-105 transition-transform">
+                      FX
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="font-bold text-sm text-white group-hover:text-[#F59E0B] transition-colors">
+                          $FLUX
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (tokenObj) toggleFavorite(tokenObj);
+                          }}
+                          className="p-1 rounded-md hover:bg-[#171922] transition cursor-pointer"
+                          title={isSaved ? "Remove from favorites" : "Add to favorites"}
+                          aria-label={isSaved ? "Remove from favorites" : "Add to favorites"}
+                        >
+                          <Star
+                            className={`h-3.5 w-3.5 transition-colors ${
+                              isSaved ? "fill-[#F5A623] text-[#F5A623]" : "text-[#4A5568] hover:text-[#F5A623]"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                      <span className="text-[11px] text-slate-400">FluxDAO</span>
+                    </div>
+                  </div>
+                  <ScoreGauge score={81} size={44} strokeWidth={3.5} />
                 </div>
-                <div>
-                  <h3 className="font-bold text-sm text-white group-hover:text-[#F59E0B] transition-colors">
-                    $FLUX
-                  </h3>
-                  <span className="text-[11px] text-slate-400">FluxDAO</span>
-                </div>
-              </div>
-              <ScoreGauge score={81} size={44} strokeWidth={3.5} />
-            </div>
 
-            <div className="mt-3 pt-3 border-t border-[#171922] flex items-center justify-between">
-              <div>
-                <span className="text-sm font-bold text-white font-mono">$2.84</span>
-                <span className="text-[10px] font-mono text-[#00FFA3] font-bold ml-1.5">+11.7%</span>
+                <div className="mt-3 pt-3 border-t border-[#171922] flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-bold text-white font-mono">$2.84</span>
+                    <span className="text-[10px] font-mono text-[#00FFA3] font-bold ml-1.5">+11.7%</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500 uppercase">Vol $3.1M</span>
+                </div>
               </div>
-              <span className="text-[10px] font-mono text-slate-500 uppercase">Vol $3.1M</span>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Card 4: $SPIRE (SpireVault) */}
-          <div
-            onClick={() => handleSelectTokenBySymbol("SPIRE")}
-            className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 hover:border-[#F59E0B]/60 hover:bg-[#13161F] transition cursor-pointer shadow-lg group"
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#7053F5]/20 text-[#7053F5] font-bold text-xs border border-[#7053F5]/40 group-hover:scale-105 transition-transform">
-                  SP
+          {(() => {
+            const tokenObj = tokens.find(
+              (t) => t.symbol.toLowerCase().replace("$", "") === "spire" || t.id.toLowerCase() === "spire"
+            );
+            const isSaved = tokenObj ? isFavorite(tokenObj.address || tokenObj.id) : false;
+            return (
+              <div
+                onClick={() => handleSelectTokenBySymbol("SPIRE")}
+                className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 hover:border-[#F59E0B]/60 hover:bg-[#13161F] transition cursor-pointer shadow-lg group relative"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#7053F5]/20 text-[#7053F5] font-bold text-xs border border-[#7053F5]/40 group-hover:scale-105 transition-transform">
+                      SP
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <h3 className="font-bold text-sm text-white group-hover:text-[#7053F5] transition-colors">
+                          $SPIRE
+                        </h3>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (tokenObj) toggleFavorite(tokenObj);
+                          }}
+                          className="p-1 rounded-md hover:bg-[#171922] transition cursor-pointer"
+                          title={isSaved ? "Remove from favorites" : "Add to favorites"}
+                          aria-label={isSaved ? "Remove from favorites" : "Add to favorites"}
+                        >
+                          <Star
+                            className={`h-3.5 w-3.5 transition-colors ${
+                              isSaved ? "fill-[#F5A623] text-[#F5A623]" : "text-[#4A5568] hover:text-[#F5A623]"
+                            }`}
+                          />
+                        </button>
+                      </div>
+                      <span className="text-[11px] text-slate-400">SpireVault</span>
+                    </div>
+                  </div>
+                  <ScoreGauge score={83} size={44} strokeWidth={3.5} />
                 </div>
-                <div>
-                  <h3 className="font-bold text-sm text-white group-hover:text-[#7053F5] transition-colors">
-                    $SPIRE
-                  </h3>
-                  <span className="text-[11px] text-slate-400">SpireVault</span>
-                </div>
-              </div>
-              <ScoreGauge score={83} size={44} strokeWidth={3.5} />
-            </div>
 
-            <div className="mt-3 pt-3 border-t border-[#171922] flex items-center justify-between">
-              <div>
-                <span className="text-sm font-bold text-white font-mono">$0.741</span>
-                <span className="text-[10px] font-mono text-[#00FFA3] font-bold ml-1.5">+9.1%</span>
+                <div className="mt-3 pt-3 border-t border-[#171922] flex items-center justify-between">
+                  <div>
+                    <span className="text-sm font-bold text-white font-mono">$0.741</span>
+                    <span className="text-[10px] font-mono text-[#00FFA3] font-bold ml-1.5">+9.1%</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-500 uppercase">Vol $640K</span>
+                </div>
               </div>
-              <span className="text-[10px] font-mono text-slate-500 uppercase">Vol $640K</span>
-            </div>
-          </div>
+            );
+          })()}
         </div>
       </div>
 
@@ -571,25 +679,25 @@ function DashboardContent() {
             />
           </div>
 
-          {/* Quick Watchlist filter pill */}
+          {/* Quick Favorites filter pill */}
           <button
             type="button"
             onClick={() => setShowWatchlistOnly(!showWatchlistOnly)}
-            className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-all shrink-0 ${
+            className={`flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-semibold transition-all shrink-0 cursor-pointer ${
               showWatchlistOnly
-                ? "border-amber-500/50 bg-amber-500/15 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.25)]"
+                ? "border-[#F5A623]/50 bg-[#F5A623]/15 text-[#F5A623] shadow-[0_0_12px_rgba(245,166,35,0.25)]"
                 : "border-[#171922] bg-[#0D0F14] text-slate-300 hover:border-slate-600 hover:text-white"
             }`}
           >
             <Star
               className={`h-3.5 w-3.5 ${
-                showWatchlistOnly ? "fill-amber-400 text-amber-400" : "text-slate-400"
+                showWatchlistOnly ? "fill-[#F5A623] text-[#F5A623]" : "text-[#4A5568]"
               }`}
             />
-            <span>Watchlist Only</span>
-            {watchlist.length > 0 && (
-              <span className="rounded-full bg-[#7053F5]/30 px-1.5 py-0.2 font-mono text-[10px] text-purple-200">
-                {watchlist.length}
+            <span>Favorites Only</span>
+            {favoritesCount > 0 && (
+              <span className="rounded-full bg-[#00FFA3]/20 border border-[#00FFA3]/30 px-1.5 py-0.2 font-mono text-[10px] text-[#00FFA3] font-bold">
+                {favoritesCount}
               </span>
             )}
           </button>
@@ -600,7 +708,6 @@ function DashboardContent() {
           tokens={filteredTokens}
           selectedTokenId={selectedToken?.id || null}
           onSelectToken={handleSelectToken}
-          watchlist={watchlist}
           onToggleWatchlist={handleToggleWatchlist}
         />
 
@@ -661,8 +768,8 @@ function DashboardContent() {
         token={selectedToken}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        isWatchlisted={selectedToken ? watchlist.includes(selectedToken.id) : false}
-        onToggleWatchlist={handleToggleWatchlist}
+        isWatchlisted={selectedToken ? isFavorite(selectedToken.address || selectedToken.id) : false}
+        onToggleWatchlist={() => selectedToken && toggleFavorite(selectedToken)}
       />
     </div>
   );

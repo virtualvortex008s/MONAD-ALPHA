@@ -28,23 +28,18 @@ import {
   TrendingUp,
   BarChart3,
   Bot,
+  Star,
 } from "lucide-react";
+import { useFavorites } from "@/hooks/useFavorites";
 
-type FilterTab = "ALL" | "NEW_DEPLOYMENTS" | "TOP_GAINERS" | "HIGH_VOLUME" | "LOW_RISK" | "WHALES";
+type FilterTab = "ALL" | "NEW_DEPLOYMENTS" | "TOP_GAINERS" | "HIGH_VOLUME" | "LOW_RISK" | "WHALES" | "FAVORITES";
 
 function AlphaScannerContent() {
   const searchParams = useSearchParams();
   const tokenParam = searchParams.get("token");
 
   const { isConnected, connectWallet } = useWallet();
-
-  const [watchlist, setWatchlist] = useState<string[]>(() => {
-    if (typeof window !== "undefined") {
-      const saved = localStorage.getItem("monad_watchlist");
-      return saved ? JSON.parse(saved) : ["MONX", "CHOG", "DAK"];
-    }
-    return ["MONX", "CHOG", "DAK"];
-  });
+  const { isFavorite, toggleFavorite, favoritesCount } = useFavorites();
 
   const [tokens, setTokens] = useState<Token[]>(mockTokens);
   const [searchQuery, setSearchQuery] = useState("");
@@ -120,15 +115,6 @@ function AlphaScannerContent() {
     setTimeout(() => setCopiedAddress(null), 1800);
   };
 
-  const handleToggleWatchlist = (tokenId: string) => {
-    setWatchlist((prev) => {
-      const next = prev.includes(tokenId) ? prev.filter((id) => id !== tokenId) : [...prev, tokenId];
-      if (typeof window !== "undefined") {
-        localStorage.setItem("monad_watchlist", JSON.stringify(next));
-      }
-      return next;
-    });
-  };
 
   const handleOpenToken = (token: Token) => {
     setSelectedToken(token);
@@ -192,6 +178,10 @@ function AlphaScannerContent() {
         result = result.filter(
           (t) => t.smartWalletsCount >= 20 || t.smartMoneyNetFlow > 200000 || t.alphaDriver.includes("Whale")
         );
+        break;
+
+      case "FAVORITES":
+        result = result.filter((t) => isFavorite(t.address) || isFavorite(t.id));
         break;
 
       case "ALL":
@@ -356,6 +346,26 @@ function AlphaScannerContent() {
           >
             <span>Whale Inflows</span>
           </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab("FAVORITES")}
+            className={`px-3 py-2 rounded-xl text-xs font-mono font-bold transition flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === "FAVORITES"
+                ? "bg-[#F5A623] text-black shadow-lg shadow-[#F5A623]/30"
+                : "bg-[#0D0F14] text-slate-400 hover:text-white border border-[#171922]"
+            }`}
+          >
+            <Star className={`w-3.5 h-3.5 ${activeTab === "FAVORITES" ? "fill-black" : "text-[#F5A623]"}`} />
+            <span>Favorites</span>
+            {favoritesCount > 0 && (
+              <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-bold ${
+                activeTab === "FAVORITES" ? "bg-black/20 text-black" : "bg-[#00FFA3]/15 text-[#00FFA3]"
+              }`}>
+                {favoritesCount}
+              </span>
+            )}
+          </button>
         </div>
       </div>
 
@@ -385,7 +395,7 @@ function AlphaScannerContent() {
               ) : (
                 filteredTokens.map((token) => {
                   const isPositive24h = token.change24h >= 0;
-                  const isSaved = watchlist.includes(token.id);
+                  const isSaved = isFavorite(token.address || token.id);
                   const isNew = token.isNewDeployment || token.launchTimeAgo.includes("m ago");
 
                   return (
@@ -394,20 +404,25 @@ function AlphaScannerContent() {
                       onClick={() => handleOpenToken(token)}
                       className="hover:bg-[#13161F]/80 transition-colors cursor-pointer group"
                     >
-                      {/* Watchlist Star */}
+                      {/* Interactive Bookmark Star */}
                       <td className="p-3 text-center">
                         <button
                           type="button"
                           onClick={(e) => {
                             e.stopPropagation();
-                            handleToggleWatchlist(token.id);
+                            toggleFavorite(token);
                           }}
-                          className={`p-1 rounded hover:bg-[#171922] transition ${
-                            isSaved ? "text-amber-400" : "text-slate-600 hover:text-slate-400"
-                          }`}
-                          aria-label="Toggle watchlist"
+                          className="p-1.5 rounded-lg hover:bg-[#171922] transition cursor-pointer"
+                          aria-label={isSaved ? "Remove from favorites" : "Add to favorites"}
+                          title={isSaved ? "Remove from favorites" : "Add to favorites"}
                         >
-                          ★
+                          <Star
+                            className={`h-4 w-4 transition-colors ${
+                              isSaved
+                                ? "fill-[#F5A623] text-[#F5A623]"
+                                : "text-[#4A5568] hover:text-[#F5A623]"
+                            }`}
+                          />
                         </button>
                       </td>
 
@@ -585,8 +600,8 @@ function AlphaScannerContent() {
         token={selectedToken}
         isOpen={isDrawerOpen}
         onClose={() => setIsDrawerOpen(false)}
-        isWatchlisted={selectedToken ? watchlist.includes(selectedToken.id) : false}
-        onToggleWatchlist={handleToggleWatchlist}
+        isWatchlisted={selectedToken ? isFavorite(selectedToken.address || selectedToken.id) : false}
+        onToggleWatchlist={() => selectedToken && toggleFavorite(selectedToken)}
       />
 
       {/* Instant Gemini AI Risk Audit Modal */}

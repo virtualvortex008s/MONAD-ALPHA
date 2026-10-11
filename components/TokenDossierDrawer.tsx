@@ -231,19 +231,22 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
               {/* Actions */}
               <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
                 <button
+                  type="button"
                   onClick={() => onToggleWatchlist(token.id)}
                   className={`flex flex-1 sm:flex-none justify-center items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-semibold transition-all cursor-pointer ${
                     isWatchlisted
-                      ? "border-amber-500/50 bg-amber-500/20 text-amber-300"
-                      : "border-[#1E2230] bg-[#191C27] text-slate-300 hover:text-white hover:border-slate-500"
+                      ? "border-[#F5A623]/50 bg-[#F5A623]/15 text-[#F5A623] shadow-[0_0_12px_rgba(245,166,35,0.25)]"
+                      : "border-[#1E2230] bg-[#191C27] text-slate-300 hover:text-white hover:border-[#F5A623]/40"
                   }`}
+                  title={isWatchlisted ? "Remove from favorites" : "Add to favorites"}
+                  aria-label={isWatchlisted ? "Remove from favorites" : "Add to favorites"}
                 >
                   <Star
-                    className={`h-3.5 w-3.5 ${
-                      isWatchlisted ? "fill-amber-400 text-amber-400" : "text-slate-400"
+                    className={`h-3.5 w-3.5 transition-colors ${
+                      isWatchlisted ? "fill-[#F5A623] text-[#F5A623]" : "text-[#4A5568]"
                     }`}
                   />
-                  <span>{isWatchlisted ? "Saved" : "Watchlist"}</span>
+                  <span>{isWatchlisted ? "Favorited" : "Favorite"}</span>
                 </button>
 
                 <button

@@ -14,13 +14,14 @@ import {
   ArrowUpDown,
 } from "lucide-react";
 import { ScoreGauge } from "./ScoreGauge";
+import { useFavorites } from "@/hooks/useFavorites";
 
 interface AlphaRadarTableProps {
   tokens: Token[];
   selectedTokenId: string | null;
   onSelectToken: (token: Token) => void;
-  watchlist: string[];
-  onToggleWatchlist: (tokenId: string) => void;
+  watchlist?: string[];
+  onToggleWatchlist?: (tokenId: string) => void;
 }
 
 type SortField = "alphaScore" | "priceUsd" | "change1h" | "riskScore" | "smartMoneyNetFlow" | "volume24h";
@@ -32,6 +33,7 @@ export const AlphaRadarTable: React.FC<AlphaRadarTableProps> = ({
   watchlist,
   onToggleWatchlist,
 }) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [copiedAddress, setCopiedAddress] = useState<string | null>(null);
   const [sortField, setSortField] = useState<SortField>("alphaScore");
   const [sortAsc, setSortAsc] = useState(false);
@@ -161,7 +163,7 @@ export const AlphaRadarTable: React.FC<AlphaRadarTableProps> = ({
             ) : (
               sortedTokens.map((token) => {
                 const isSelected = selectedTokenId === token.id;
-                const isWatchlisted = watchlist.includes(token.id);
+                const isSaved = isFavorite(token.address || token.id) || Boolean(watchlist?.includes(token.id));
                 const isPositive1h = token.change1h >= 0;
                 const isCopied = copiedAddress === token.address;
 
@@ -175,19 +177,22 @@ export const AlphaRadarTable: React.FC<AlphaRadarTableProps> = ({
                         : "hover:bg-[#13161F]"
                     }`}
                   >
-                    {/* Watchlist Toggle */}
+                    {/* Favorites Toggle */}
                     <td className="py-3.5 pl-4 pr-2 text-center">
                       <button
+                        type="button"
                         onClick={(e) => {
                           e.stopPropagation();
-                          onToggleWatchlist(token.id);
+                          toggleFavorite(token);
+                          if (onToggleWatchlist) onToggleWatchlist(token.id);
                         }}
-                        className="rounded p-1 text-slate-500 hover:text-amber-400 transition-colors"
-                        title={isWatchlisted ? "Remove from watchlist" : "Add to watchlist"}
+                        className="rounded-lg p-1.5 transition-colors cursor-pointer hover:bg-[#171922]"
+                        title={isSaved ? "Remove from favorites" : "Add to favorites"}
+                        aria-label={isSaved ? "Remove from favorites" : "Add to favorites"}
                       >
                         <Star
-                          className={`h-4 w-4 ${
-                            isWatchlisted ? "fill-amber-400 text-amber-400" : "text-slate-500"
+                          className={`h-4 w-4 transition-colors ${
+                            isSaved ? "fill-[#F5A623] text-[#F5A623]" : "text-[#4A5568] hover:text-[#F5A623]"
                           }`}
                         />
                       </button>

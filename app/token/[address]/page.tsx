@@ -23,7 +23,9 @@ import {
   CheckCircle2,
   AlertTriangle,
   RefreshCw,
+  Star,
 } from "lucide-react";
+import { useFavorites } from "@/hooks/useFavorites";
 
 interface TokenPageProps {
   params: Promise<{ address: string }>;
@@ -32,6 +34,7 @@ interface TokenPageProps {
 export default function TokenDeepDivePage({ params }: TokenPageProps) {
   const resolvedParams = use(params);
   const tokenAddress = resolvedParams.address.toLowerCase();
+  const { isFavorite, toggleFavorite } = useFavorites();
 
   // Initial fallback resolution
   const initialToken: Token = mockTokens.find(
@@ -229,6 +232,28 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
                 <span className="rounded-md border border-[#7053F5]/40 bg-[#7053F5]/15 px-2 py-0.5 font-mono text-xs font-bold text-[#7053F5]">
                   {token.alphaDriver}
                 </span>
+
+                {/* Bookmark Favorite Button */}
+                <button
+                  type="button"
+                  onClick={() => toggleFavorite(token)}
+                  className={`flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-xs font-mono transition-all cursor-pointer ${
+                    isFavorite(token.address || token.id)
+                      ? "border-[#F5A623]/50 bg-[#F5A623]/15 text-[#F5A623] shadow-[0_0_12px_rgba(245,166,35,0.25)]"
+                      : "border-[#1E2230] bg-[#191C27] text-slate-400 hover:text-white hover:border-[#F5A623]/40"
+                  }`}
+                  title={isFavorite(token.address || token.id) ? "Remove from favorites" : "Add to favorites"}
+                  aria-label={isFavorite(token.address || token.id) ? "Remove from favorites" : "Add to favorites"}
+                >
+                  <Star
+                    className={`h-3.5 w-3.5 transition-colors ${
+                      isFavorite(token.address || token.id)
+                        ? "fill-[#F5A623] text-[#F5A623]"
+                        : "text-[#4A5568]"
+                    }`}
+                  />
+                  <span>{isFavorite(token.address || token.id) ? "Favorited" : "Favorite"}</span>
+                </button>
               </div>
 
               {/* Address & Explorer */}
