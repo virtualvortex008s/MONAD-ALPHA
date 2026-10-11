@@ -72,7 +72,7 @@ export const AiAuditModal: React.FC<AiAuditModalProps> = ({
         if (isMounted) {
           // Provide instant high-fidelity fallback if network drops
           setReport({
-            aiSummary: `${token.name} (${token.symbol}) demonstrates ${
+            aiSummary: `${token.name} (${token.symbol}) exhibits ${
               token.riskScore <= 30 ? "verified contract integrity with locked liquidity" : "elevated risk characteristics"
             } on Monad Testnet. Smart wallet net flow is ${
               token.smartMoneyNetFlow >= 0 ? "positive" : "negative"

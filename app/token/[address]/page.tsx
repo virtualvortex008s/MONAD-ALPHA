@@ -355,7 +355,7 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
             {isAiRefreshing && (
               <div className="mb-4 flex items-center gap-2 rounded-lg border border-[#7053F5]/40 bg-[#7053F5]/15 px-3 py-2 text-xs font-mono text-[#7053F5] animate-pulse">
                 <Sparkles className="h-3.5 w-3.5 animate-spin text-[#7053F5]" />
-                <span className="font-semibold">Generating Gemini 2.0 Flash Intelligence...</span>
+                <span className="font-semibold">Synthesizing On-Chain Footprint via Gemini...</span>
               </div>
             )}
 
@@ -367,10 +367,10 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="text-base font-bold text-white">
-                      Gemini Flash AI Intelligence Dossier
+                      Live AI Intelligence Dossier
                     </h3>
                     <span className="rounded bg-[#7053F5]/20 px-2 py-0.5 font-mono text-[10px] font-bold text-[#7053F5] border border-[#7053F5]/30">
-                      gemini-2.0-flash
+                      Google Gemini 2.0 Flash
                     </span>
                     {aiReport.tokenPhase && (
                       <span className="rounded bg-[#7053F5]/20 px-2 py-0.5 font-mono text-[10px] font-bold text-[#7053F5] border border-[#7053F5]/30">
@@ -379,7 +379,7 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
                     )}
                   </div>
                   <p className="text-xs text-slate-400">
-                    Real-time synthesis of Monad mempool dynamics, whale positioning, and smart contract safety
+                    Live AI Intelligence Dossier: Synthesized in real-time by Google Gemini 2.0 Flash from connected wallet telemetry.
                   </p>
                 </div>
               </div>
@@ -505,9 +505,9 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
           </div>
         </div>
 
-        {/* Right 1 Column: Interactive Swap Simulator + Smart Accumulators */}
+        {/* Right 1 Column: Monad DEX Instant Swap + Smart Accumulators */}
         <div className="space-y-8">
-          {/* Swap Simulator Card */}
+          {/* Monad DEX Instant Swap Card */}
           <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-4 sm:p-6 shadow-xl">
             <div className="flex items-center justify-between border-b border-[#1E2230] pb-4 mb-5">
               <div className="flex items-center gap-2">

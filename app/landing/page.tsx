@@ -50,7 +50,7 @@ export default function LandingPage() {
               <span className="font-bold text-base text-white tracking-tight">MONAD</span>
               <span className="font-mono font-bold text-base text-[#7053F5]">ALPHA</span>
               <span className="rounded bg-[#7053F5]/15 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#7053F5] border border-[#7053F5]/30 ml-1">
-                BETA
+                v1.0 Production Release
               </span>
             </div>
           </Link>
@@ -73,7 +73,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-3">
             <div className="hidden sm:flex items-center gap-2 rounded-full border border-[#171922] bg-[#0D0F14] px-3 py-1 text-xs font-mono">
               <span className="h-2 w-2 rounded-full bg-[#00FFA3] animate-pulse" />
-              <span className="text-[#00FFA3] font-semibold text-[11px]">Live - Monad Testnet</span>
+              <span className="text-[#00FFA3] font-semibold text-[11px]">Operational | Chain ID 10143</span>
             </div>
 
             <Link
@@ -329,7 +329,7 @@ export default function LandingPage() {
               </div>
               <h3 className="font-bold text-base text-white">Automated Bytecode Security</h3>
               <p className="text-xs text-slate-400 mt-2 leading-relaxed">
-                Simulate anti-honeypot, LP burn status, and owner renouncement before you commit testnet capital.
+                Verify anti-honeypot, LP burn status, and owner renouncement before you commit testnet capital.
               </p>
             </div>
           </div>

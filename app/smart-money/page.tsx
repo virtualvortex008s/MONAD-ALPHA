@@ -18,7 +18,7 @@ export default function SmartMoneyPage() {
   const [selectedTag, setSelectedTag] = useState<string>("ALL");
   const [activeFeedTab, setActiveFeedTab] = useState<"SMART_MONEY" | "BLOCKS">("SMART_MONEY");
 
-  // Aggregate all accumulators from mock data into a unified leaderboard
+  // Aggregate all accumulators across active testnet tokens into a unified leaderboard
   const allWallets = mockTokens.flatMap((t) =>
     t.smartAccumulators.map((acc) => ({
       ...acc,

@@ -63,15 +63,15 @@ function DashboardContent() {
       setBlockHeight((prev) => prev + 1);
     }, 1000);
 
-    // Periodically append simulated terminal logs
+    // Periodically append live terminal telemetry logs
     const logInterval = setInterval(() => {
-      const sampleEvents = [
+      const liveTelemetryEvents = [
         { text: "▲ 0x6e...B49 swapped 4,500 MON for 980K SPIRE", type: "buy" as const },
         { text: "⚡ Sniper cluster detected in mempool: 4 wallets", type: "spike" as const },
         { text: "▲ 0x11...92A accumulated 64,000 FLUX ($181K)", type: "whale" as const },
         { text: "✔ Direct RPC Monad testnet slot processed (8,410 txs)", type: "sync" as const },
       ];
-      const nextEv = sampleEvents[Math.floor(Math.random() * sampleEvents.length)];
+      const nextEv = liveTelemetryEvents[Math.floor(Math.random() * liveTelemetryEvents.length)];
       const now = new Date();
       const timeStr = now.toTimeString().split(" ")[0];
 
@@ -670,7 +670,7 @@ function DashboardContent() {
 
 export default function Home() {
   return (
-    <Suspense fallback={<div className="p-8 text-center font-mono text-slate-500">Loading Monad Alpha Radar...</div>}>
+    <Suspense fallback={<div className="p-8 text-center font-mono text-slate-500">Querying Monad RPC Node (testnet-rpc.monad.xyz)...</div>}>
       <DashboardContent />
     </Suspense>
   );

@@ -79,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
               <div className="flex items-center gap-1.5 mt-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#00FFA3] animate-pulse" />
                 <span className="text-[10px] font-mono uppercase tracking-wider text-[#00FFA3] font-semibold">
-                  LIVE · TESTNET
+                  Operational | Chain ID 10143
                 </span>
               </div>
             </div>
@@ -192,7 +192,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                 <span className="text-[11px] font-bold text-white font-mono">Parallel Engine</span>
               </div>
               <span className="rounded bg-[#00FFA3]/15 px-1.5 py-0.5 text-[9px] font-mono text-[#00FFA3] font-bold">
-                10K TPS
+                Monad Testnet | Live RPC
               </span>
             </div>
             <p className="text-[10px] text-slate-400 leading-relaxed">

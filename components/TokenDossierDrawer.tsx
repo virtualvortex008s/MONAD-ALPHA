@@ -346,11 +346,14 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
                   </div>
                   <div>
                     <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-                      Gemini Flash AI Intelligence
+                      Live AI Intelligence Dossier
                       <span className="rounded bg-[#7053F5]/30 px-1.5 py-0.5 font-mono text-[9px] font-bold text-[#7053F5] border border-[#7053F5]/40">
-                        gemini-2.0-flash
+                        Google Gemini 2.0 Flash
                       </span>
                     </h3>
+                    <p className="text-[11px] text-slate-400 mt-0.5">
+                      Synthesized in real-time by Google Gemini 2.0 Flash from connected wallet telemetry.
+                    </p>
                   </div>
                 </div>
                 {!isConnected ? (
@@ -371,7 +374,7 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
                   {isAiGenerating && (
                     <div className="mb-3 flex items-center gap-2 rounded-lg border border-[#7053F5]/40 bg-[#7053F5]/15 px-3 py-2 text-xs font-mono text-[#7053F5] animate-pulse">
                       <Sparkles className="h-3.5 w-3.5 animate-spin text-[#7053F5]" />
-                      <span className="font-semibold">Generating Gemini 2.0 Flash Intelligence...</span>
+                      <span className="font-semibold">Synthesizing On-Chain Footprint via Gemini...</span>
                     </div>
                   )}
 
@@ -493,14 +496,14 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
                 /* UNLOCK PROMPT FOR UNCONNECTED USERS */
                 <div className="p-4 rounded-xl bg-[#0D0F14] border border-[#171922] text-center space-y-3 font-sans">
                   <p className="text-xs text-slate-400 leading-relaxed">
-                    Gemini AI catalyst breakdown, organic buyer/seller ratios, and rug safety audits are unlocked when connected to Monad Testnet.
+                    Authentication Required: Connect MetaMask to initialize live on-chain intelligence on Monad Testnet.
                   </p>
                   <button
                     onClick={connectWallet}
                     className="px-4 py-2.5 rounded-xl bg-[#7053F5] hover:bg-[#5E3FEB] text-white text-xs font-bold shadow-md shadow-[#7053F5]/25 transition inline-flex items-center justify-center gap-2 cursor-pointer"
                   >
                     <MetaMaskLogo size={16} />
-                    <span>Connect MetaMask to Unlock AI Dossier</span>
+                    <span>Connect MetaMask</span>
                   </button>
                 </div>
               )}

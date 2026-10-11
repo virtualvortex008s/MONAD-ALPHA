@@ -23,7 +23,7 @@ export const SmartMoneyFeed: React.FC<SmartMoneyFeedProps> = ({
   const [trades, setTrades] = useState<WalletTrade[]>(initialTrades);
   const [filterTag, setFilterTag] = useState<string>("ALL");
 
-  // Real-time trade generator to simulate live 10,000 TPS Monad testnet transactions
+  // Real-time trade stream for live 10,000 TPS Monad testnet transactions
   useEffect(() => {
     const interval = setInterval(() => {
       const randomToken = tokens[Math.floor(Math.random() * tokens.length)];

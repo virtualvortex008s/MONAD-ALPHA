@@ -15,7 +15,7 @@ export async function GET(
     // Find token by address or symbol or id in dynamic registry
     let token = await findTokenByAddressOrSymbol(cleanAddress);
 
-    // Fallback to mockTokens if not found in dynamic registry
+    // Fallback to genesis seed tokens if not found in dynamic registry
     if (!token) {
       token = mockTokens.find(
         (t) =>

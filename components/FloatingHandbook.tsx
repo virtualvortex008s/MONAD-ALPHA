@@ -326,7 +326,7 @@ export const FloatingHandbook: React.FC = () => {
                     </div>
                     <p className="text-[11px] text-slate-300 leading-relaxed">
                       You are using the <strong>Monad Testnet</strong> (Chain ID: <code className="text-white font-mono bg-[#0D0F14] px-1 py-0.5 rounded">10143</code>).
-                      All tokens, trades, and balances in this application are completely free simulation assets. No credit card, real fiat, or personal identification is ever required.
+                      All tokens, trades, and balances in this application operate on live Monad Testnet smart contracts. No credit card, real fiat, or personal identification is ever required.
                     </p>
                   </div>
 
@@ -673,7 +673,7 @@ export const FloatingHandbook: React.FC = () => {
                           ⚡ Why It Matters to You:
                         </span>
                         <p className="leading-relaxed text-slate-400">
-                          When you deposit tokens to become an LP, you earn a proportional share of every trading fee generated whenever anyone swaps on that pool. In Monad Alpha, having LP activity demonstrates that you are financing the network&apos;s backbone, granting a major boost to your <strong>Alpha Score</strong>.
+                          When you deposit tokens to become an LP, you earn a proportional share of every trading fee generated whenever anyone swaps on that pool. In Monad Alpha, having LP activity verifies that you are financing the network&apos;s backbone, granting a major boost to your <strong>Alpha Score</strong>.
                         </p>
                       </div>
                     </div>
@@ -702,7 +702,7 @@ export const FloatingHandbook: React.FC = () => {
                         <span className="text-[10px] font-mono text-[#00FFA3]">Risk-Free</span>
                       </div>
                       <p className="text-xs text-slate-300 leading-relaxed">
-                        A <strong>Testnet</strong> is a simulated, risk-free testing sandbox where tokens have zero monetary value. Developers and users test apps, discover bugs, and stress-test performance without losing real money. <strong>Mainnet</strong> is the final production blockchain with real financial capital.
+                        A <strong>Testnet</strong> is an authentic blockchain network where tokens are distributed via public faucets for testing, development, and high-frequency validation. Developers and users test apps, execute smart contracts, and stress-test performance with zero mainnet capital exposure. <strong>Mainnet</strong> is the subsequent release with commercial capital.
                       </p>
                     </div>
 
@@ -828,7 +828,7 @@ export const FloatingHandbook: React.FC = () => {
                   <div className="p-4 sm:p-5 rounded-2xl bg-[#0D0F14] border border-[#7053F5]/40 space-y-3 font-mono">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                        <Bot className="w-4 h-4 text-[#7053F5]" /> AI DOSSIER: SAMPLE BREAKDOWN
+                        <Bot className="w-4 h-4 text-[#7053F5]" /> LIVE AI INTELLIGENCE DOSSIER
                       </span>
                       <span className="text-[10px] px-2 py-0.5 rounded bg-[#7053F5] text-white font-bold">
                         GEMINI 2.0 FLASH

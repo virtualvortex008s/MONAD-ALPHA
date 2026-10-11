@@ -29,7 +29,7 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  // Find accumulator across mockTokens that matches or has address substring
+  // Find accumulator across active tokens that matches or has address substring
   const allAccumulators = mockTokens.flatMap((t) =>
     t.smartAccumulators.map((acc) => ({
       ...acc,

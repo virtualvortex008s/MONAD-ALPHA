@@ -76,7 +76,10 @@ export const TopBar: React.FC<TopBarProps> = ({
               <div className="flex items-center gap-1.5 mt-1">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#00FFA3] animate-pulse shrink-0" />
                 <span className="text-[10px] font-mono uppercase text-slate-400 font-semibold tracking-wider truncate">
-                  Monad Testnet · 10,000 TPS · Real-Time
+                  Operational | Chain ID 10143
+                </span>
+                <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-[#00FFA3]/10 text-[#00FFA3] border border-[#00FFA3]/20 font-bold ml-1">
+                  Live RPC
                 </span>
               </div>
             </div>
@@ -85,7 +88,7 @@ export const TopBar: React.FC<TopBarProps> = ({
             <div className="hidden sm:flex lg:hidden items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#00FFA3]/10 border border-[#00FFA3]/20 shrink-0">
               <span className="h-1.5 w-1.5 rounded-full bg-[#00FFA3] animate-pulse" />
               <span className="text-[10px] font-mono text-[#00FFA3] font-bold">
-                Testnet
+                Operational | Chain ID 10143
               </span>
             </div>
           </div>

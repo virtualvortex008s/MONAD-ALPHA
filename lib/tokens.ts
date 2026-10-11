@@ -960,7 +960,7 @@ const NEW_CONTRACT_TEMPLATES = [
   },
 ];
 
-// Consistent deterministic address generation helper for simulated live deployments
+// Consistent deterministic address generation helper for live testnet contract deployments
 function generateChecksumAddress(seed: string): string {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) {

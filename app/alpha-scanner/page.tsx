@@ -607,7 +607,7 @@ export default function AlphaScannerPage() {
         <div className="w-full py-16 flex items-center justify-center font-mono text-slate-500 text-xs">
           <div className="flex items-center gap-2">
             <span className="h-2 w-2 rounded-full bg-[#00FFA3] animate-pulse" />
-            <span>Loading Monad Alpha Scanner...</span>
+            <span>Querying Monad RPC Node (testnet-rpc.monad.xyz)...</span>
           </div>
         </div>
       }

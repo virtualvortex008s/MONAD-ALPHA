@@ -173,10 +173,15 @@ export const MiniChart: React.FC<MiniChartProps> = ({
           <span className="font-mono text-sm font-bold text-white">
             ${displayPrice < 0.01 ? displayPrice.toFixed(6) : displayPrice.toFixed(4)}
           </span>
-          {hoveredPrice !== null && (
+          {hoveredPrice !== null ? (
             <span className="rounded bg-[#7053F5]/20 px-1.5 py-0.5 text-[10px] font-medium text-[#7053F5]">
               Crosshair
             </span>
+          ) : (
+            <div className="hidden sm:flex items-center gap-1.5 text-[10px] font-mono text-[#00FFA3]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#00FFA3] animate-pulse" />
+              <span>Gas: ~50 Gwei · Finality: &lt;1s</span>
+            </div>
           )}
         </div>
 

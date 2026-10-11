@@ -21,6 +21,8 @@ import {
   AlertCircle,
   Clock,
   Layers,
+  Fuel,
+  Radar,
 } from "lucide-react";
 import { useWallet } from "@/context/WalletContext";
 import { monadPublicClient, ERC20_ABI, MONAD_TESTNET_CONFIG } from "@/lib/monad";
@@ -59,7 +61,7 @@ export default function PortfolioPage() {
   const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
   const [monBalance, setMonBalance] = useState<number>(0);
   const [txCount, setTxCount] = useState<number>(0);
-  const [activityScore, setActivityScore] = useState<number>(10);
+  const [activityScore, setActivityScore] = useState<number>(0);
   const [tokenHoldings, setTokenHoldings] = useState<TokenHolding[]>([]);
   const [totalPortfolioValue, setTotalPortfolioValue] = useState<number>(0);
   const [lastSyncTime, setLastSyncTime] = useState<string>("");
@@ -119,8 +121,8 @@ export default function PortfolioPage() {
       setTxCount(onChainTxCount);
 
       // Authentic 0-100 score based on real transaction history
-      // e.g. 0 txs = 10 baseline, 1 tx = 15, 10 txs = 60, 18+ txs = 100
-      const score = Math.min(100, Math.max(10, Math.round(onChainTxCount * 5 + 10)));
+      // Fresh wallet (0 txs) = 0 Novice Tier
+      const score = onChainTxCount === 0 ? 0 : Math.min(100, Math.max(10, Math.round(onChainTxCount * 5 + 10)));
       setActivityScore(score);
 
       // 3. Query ERC-20 Token Balances for tracked Monad tokens
@@ -197,11 +199,10 @@ export default function PortfolioPage() {
 
           <div>
             <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
-              No Wallet Connected
+              Authentication Required
             </h2>
             <p className="text-xs sm:text-sm text-slate-400 mt-2.5 leading-relaxed max-w-md mx-auto">
-              Connect your MetaMask wallet to view your live Monad Testnet portfolio,
-              on-chain transaction count, and verified token balances directly from RPC.
+              Authentication Required: Connect MetaMask to initialize live on-chain intelligence on Monad Testnet.
             </p>
           </div>
 
@@ -212,13 +213,38 @@ export default function PortfolioPage() {
               className="flex items-center justify-center gap-2 rounded-xl bg-[#7053F5] hover:bg-[#5E3FEB] px-6 py-3.5 text-xs font-bold text-white shadow-[0_0_20px_rgba(112,83,245,0.45)] transition-all active:scale-95 cursor-pointer"
             >
               <MetaMaskLogo size={18} />
-              <span>Connect MetaMask (Monad Testnet)</span>
+              <span>Connect MetaMask</span>
             </button>
           </div>
 
           <div className="pt-4 border-t border-[#171922] flex items-center justify-center gap-2 text-[11px] font-mono text-slate-500">
             <span className="h-1.5 w-1.5 rounded-full bg-[#00FFA3] animate-pulse" />
             <span>Monad Testnet RPC: testnet-rpc.monad.xyz (10143)</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Loading terminal transition state while first querying on-chain data
+  if (isLoading && !lastSyncTime) {
+    return (
+      <div className="py-20 px-4 max-w-lg mx-auto text-center space-y-4 animate-in fade-in duration-300">
+        <div className="rounded-2xl border border-[#171922] bg-[#0D0F14] p-8 shadow-2xl space-y-5">
+          <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-[#7053F5]/15 text-[#7053F5] border border-[#7053F5]/30 mx-auto">
+            <RefreshCw className="h-6 w-6 animate-spin text-[#7053F5]" />
+          </div>
+          <div>
+            <h3 className="text-base font-bold text-white font-mono">
+              Querying Monad RPC Node (testnet-rpc.monad.xyz)...
+            </h3>
+            <p className="text-xs text-slate-400 mt-2 font-mono leading-relaxed">
+              Reading Contract State and Native MON Balance...
+            </p>
+          </div>
+          <div className="flex items-center justify-center gap-2 pt-2 text-[11px] font-mono text-[#00FFA3]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#00FFA3] animate-pulse" />
+            <span>Operational | Chain ID 10143</span>
           </div>
         </div>
       </div>
@@ -344,11 +370,13 @@ export default function PortfolioPage() {
           </div>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-3xl sm:text-4xl font-black text-[#00FFA3] font-mono tracking-tight">
-              +${(totalPortfolioValue * 0.084).toFixed(2)}
+              {totalPortfolioValue > 0 ? `+$${(totalPortfolioValue * 0.084).toFixed(2)}` : "$0.00"}
             </span>
           </div>
           <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-400">
-            <span className="text-slate-500 font-mono">+8.4% 24h market baseline</span>
+            <span className="text-slate-500 font-mono">
+              {totalPortfolioValue > 0 ? "+8.4% 24h market baseline" : "0.0% · No active positions"}
+            </span>
           </div>
         </div>
 
@@ -362,7 +390,7 @@ export default function PortfolioPage() {
           </div>
           <div className="flex items-baseline gap-2 mt-2">
             <span className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">
-              {monBalance.toFixed(3)}
+              {monBalance.toFixed(4)}
             </span>
             <span className="text-xs font-mono text-[#7053F5] font-bold">MON</span>
           </div>
@@ -386,8 +414,12 @@ export default function PortfolioPage() {
             <span className="text-xs font-mono text-slate-500">/100</span>
           </div>
           <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-400">
-            <span className="text-[#00FFA3] font-mono font-bold">{txCount} txs</span>
-            <span className="text-slate-500">sent on Testnet</span>
+            <span className="text-[#00FFA3] font-mono font-bold">
+              {txCount > 0 ? `${txCount} txs` : "0 Transactions"}
+            </span>
+            <span className="text-slate-500">
+              {txCount > 0 ? "sent on Testnet" : "· Novice Tier"}
+            </span>
           </div>
         </div>
       </div>
@@ -602,103 +634,38 @@ export default function PortfolioPage() {
               </div>
             ))
           ) : (
-            <>
-              {/* Informative Holding Card 1: $MONX */}
-              <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-5 hover:border-[#7053F5]/50 transition shadow-lg space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#7053F5]/20 text-[#7053F5] font-bold text-sm border border-[#7053F5]/40">
-                      MX
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-white">$MONX</h3>
-                      <span className="text-xs text-slate-400">MonadFi Pool</span>
-                    </div>
-                  </div>
-                  <ScoreGauge score={88} size={48} strokeWidth={4} label="ALPHA" />
-                </div>
-
-                <div className="space-y-2.5 pt-2 border-t border-[#171922]">
-                  <div>
-                    <div className="flex justify-between text-xs font-mono mb-1">
-                      <span className="text-slate-400">Smart Money Activity</span>
-                      <span className="text-[#00FFA3] font-bold">92 / 100</span>
-                    </div>
-                    <div className="h-2 w-full bg-[#171922] rounded-full overflow-hidden">
-                      <div className="h-full bg-[#00FFA3] rounded-full" style={{ width: "92%" }} />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-mono mb-1">
-                      <span className="text-slate-400">Volume Momentum</span>
-                      <span className="text-[#7053F5] font-bold">97 / 100</span>
-                    </div>
-                    <div className="h-2 w-full bg-[#171922] rounded-full overflow-hidden">
-                      <div className="h-full bg-[#7053F5] rounded-full" style={{ width: "97%" }} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-[#171922] flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-500">0 Tokens held</span>
-                  <Link
-                    href="/#radar"
-                    className="text-[#7053F5] hover:underline flex items-center gap-1 font-semibold"
-                  >
-                    Swap $MON → $MONX <ArrowRight className="h-3 w-3" />
-                  </Link>
-                </div>
+            <div className="col-span-full rounded-xl border border-dashed border-[#171922] bg-[#0D0F14]/70 p-8 text-center space-y-4">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#7053F5]/10 text-[#7053F5] mx-auto border border-[#7053F5]/20">
+                <Coins className="h-6 w-6" />
               </div>
-
-              {/* Informative Holding Card 2: $ECHO */}
-              <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-5 hover:border-[#00FFA3]/50 transition shadow-lg space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#00FFA3]/20 text-[#00FFA3] font-bold text-sm border border-[#00FFA3]/40">
-                      EC
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-sm text-white">$ECHO</h3>
-                      <span className="text-xs text-slate-400">EchoNet</span>
-                    </div>
-                  </div>
-                  <ScoreGauge score={91} size={48} strokeWidth={4} label="ALPHA" />
-                </div>
-
-                <div className="space-y-2.5 pt-2 border-t border-[#171922]">
-                  <div>
-                    <div className="flex justify-between text-xs font-mono mb-1">
-                      <span className="text-slate-400">Smart Money Activity</span>
-                      <span className="text-[#00FFA3] font-bold">95 / 100</span>
-                    </div>
-                    <div className="h-2 w-full bg-[#171922] rounded-full overflow-hidden">
-                      <div className="h-full bg-[#00FFA3] rounded-full" style={{ width: "95%" }} />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="flex justify-between text-xs font-mono mb-1">
-                      <span className="text-slate-400">Volume Momentum</span>
-                      <span className="text-[#7053F5] font-bold">89 / 100</span>
-                    </div>
-                    <div className="h-2 w-full bg-[#171922] rounded-full overflow-hidden">
-                      <div className="h-full bg-[#7053F5] rounded-full" style={{ width: "89%" }} />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-[#171922] flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-500">0 Tokens held</span>
-                  <Link
-                    href="/#radar"
-                    className="text-[#00FFA3] hover:underline flex items-center gap-1 font-semibold"
-                  >
-                    Swap $MON → $ECHO <ArrowRight className="h-3 w-3" />
-                  </Link>
-                </div>
+              <div className="max-w-md mx-auto">
+                <h3 className="font-bold text-sm text-white font-mono">
+                  No ERC-20 Holdings Detected
+                </h3>
+                <p className="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                  Your connected wallet address holds 0 custom Monad Testnet tokens. Request testnet MON from the official faucet to begin trading on-chain.
+                </p>
               </div>
-            </>
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <a
+                  href="https://faucet.monad.xyz"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg bg-[#7053F5] hover:bg-[#5E3FEB] text-white text-xs font-bold font-mono transition shadow-md cursor-pointer"
+                >
+                  <Fuel className="h-3.5 w-3.5" />
+                  <span>Get Testnet MON (Official Faucet)</span>
+                  <ExternalLink className="h-3 w-3 ml-0.5" />
+                </a>
+                <Link
+                  href="/alpha-scanner"
+                  className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-[#171922] bg-[#12141C] hover:border-slate-700 text-slate-300 hover:text-white text-xs font-mono font-medium transition"
+                >
+                  <Radar className="h-3.5 w-3.5 text-[#00FFA3]" />
+                  <span>Launch Alpha Scanner</span>
+                </Link>
+              </div>
+            </div>
           )}
         </div>
       </div>
