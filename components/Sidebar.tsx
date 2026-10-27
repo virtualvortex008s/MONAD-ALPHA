@@ -13,6 +13,7 @@ import {
   Radio,
   Fuel,
   Star,
+  Gamepad2,
 } from "lucide-react";
 import { openHandbook } from "./FloatingHandbook";
 import { useFavorites } from "@/hooks/useFavorites";
@@ -130,6 +131,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, onOpenFavorit
                 </div>
                 <span className="rounded bg-[#00FFA3]/15 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#00FFA3] border border-[#00FFA3]/30">
                   NEW
+                </span>
+              </Link>
+
+              <Link
+                href="/games"
+                onClick={onClose}
+                className={navItemClass(isRouteActive("/games"))}
+              >
+                <div className="flex items-center gap-3">
+                  <Gamepad2 className={navIconClass(isRouteActive("/games"))} />
+                  <span>Games</span>
+                </div>
+                <span className="rounded bg-[#7053F5]/20 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#7053F5] border border-[#7053F5]/30">
+                  ARCADE
                 </span>
               </Link>
             </div>

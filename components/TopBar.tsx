@@ -10,6 +10,9 @@ import {
   X,
   ArrowRight,
   Star,
+  Gamepad2,
+  Radar,
+  Briefcase,
 } from "lucide-react";
 import { MonadLogo } from "./MonadLogo";
 import { MetaMaskLogo } from "@/components/icons/MetaMaskLogo";
@@ -44,6 +47,7 @@ export const TopBar: React.FC<TopBarProps> = ({
     if (pathname === "/") return "Dashboard";
     if (pathname.startsWith("/alpha-scanner") || pathname.startsWith("/new-launches")) return "Alpha Scanner";
     if (pathname.startsWith("/portfolio")) return "Portfolio Intelligence";
+    if (pathname.startsWith("/games")) return "Monad Arcade";
     return "Dashboard";
   };
 
@@ -98,8 +102,70 @@ export const TopBar: React.FC<TopBarProps> = ({
             </div>
           </div>
 
-          {/* Right: Quick Search, Notifications & Web3 Wallet */}
-          <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+          {/* Central Navigation Tabs (Desktop) alongside Scanner, Portfolio, Games, Favorites */}
+          <nav className="hidden lg:flex items-center gap-1 bg-[#0D0F14] border border-[#171922] p-1 rounded-xl">
+            <Link
+              href="/alpha-scanner"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
+                pathname.startsWith("/alpha-scanner") || pathname.startsWith("/new-launches")
+                  ? "bg-[#7053F5]/20 text-white font-bold border border-[#7053F5]/40 shadow-[0_0_12px_rgba(112,83,245,0.25)]"
+                  : "text-slate-400 hover:text-white hover:bg-[#13161F]"
+              }`}
+            >
+              <Radar className="h-3.5 w-3.5 text-[#7053F5]" />
+              <span>Scanner</span>
+            </Link>
+
+            <Link
+              href="/portfolio"
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
+                pathname.startsWith("/portfolio")
+                  ? "bg-[#7053F5]/20 text-white font-bold border border-[#7053F5]/40 shadow-[0_0_12px_rgba(112,83,245,0.25)]"
+                  : "text-slate-400 hover:text-white hover:bg-[#13161F]"
+              }`}
+            >
+              <Briefcase className="h-3.5 w-3.5 text-[#7053F5]" />
+              <span>Portfolio</span>
+            </Link>
+
+            <Link
+              href="/games"
+              className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition cursor-pointer ${
+                pathname.startsWith("/games")
+                  ? "bg-[#7053F5] text-white font-bold border border-[#7053F5] shadow-[0_0_16px_rgba(112,83,245,0.5)]"
+                  : "text-slate-300 hover:text-white hover:bg-[#13161F]"
+              }`}
+            >
+              <Gamepad2 className={`h-3.5 w-3.5 ${pathname.startsWith("/games") ? "text-white" : "text-[#7053F5]"}`} />
+              <span>Games</span>
+              <span
+                className={`text-[9px] font-bold px-1.5 py-0.2 rounded font-mono ${
+                  pathname.startsWith("/games")
+                    ? "bg-white/20 text-white"
+                    : "bg-[#7053F5]/20 text-[#7053F5] border border-[#7053F5]/30"
+                }`}
+              >
+                ARCADE
+              </span>
+            </Link>
+          </nav>
+
+          {/* Right: Quick Search, Favorites, Games (Mobile), Notifications & Web3 Wallet */}
+          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+            {/* Mobile Games Quick Link */}
+            <Link
+              href="/games"
+              className={`flex lg:hidden items-center gap-1.5 p-2 sm:px-2.5 sm:py-1.5 rounded-xl border text-xs font-mono transition cursor-pointer ${
+                pathname.startsWith("/games")
+                  ? "bg-[#7053F5] text-white border-[#7053F5] shadow-[0_0_14px_rgba(112,83,245,0.5)] font-bold"
+                  : "bg-[#0D0F14] border-[#171922] text-slate-300 hover:text-white hover:border-[#7053F5]/40"
+              }`}
+              title="Monad Arcade Games"
+            >
+              <Gamepad2 className={`h-4 w-4 sm:h-3.5 sm:w-3.5 ${pathname.startsWith("/games") ? "text-white" : "text-[#7053F5]"}`} />
+              <span className="hidden sm:inline">Games</span>
+            </Link>
+
             {/* Global Search Trigger: Icon on <640px, full bar on >=640px */}
             <button
               type="button"
