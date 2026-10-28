@@ -30,11 +30,13 @@ export const HeaderWalletButton = () => {
   }
 
   return (
-    <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 py-1 rounded-xl bg-[#0D0F14] border border-[#171922] font-mono text-xs shadow-sm shrink-0">
+    <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 py-1 rounded-xl bg-[#0D0F14] border border-[#171922] font-mono text-xs shadow-sm shrink-0">
       <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#00FFA3] animate-pulse shrink-0"></span>
       <span className="hidden md:inline text-white font-bold">{balance ? `${balance} MON` : "0.000 MON"}</span>
       <span className="hidden md:inline text-slate-600">|</span>
-      <span className="text-slate-200 font-bold">{address?.slice(0, 6)}...{address?.slice(-4)}</span>
+      <span className="font-mono text-xs sm:text-sm truncate max-w-[80px] sm:max-w-[140px] inline-block font-bold text-slate-200 align-middle">
+        {address}
+      </span>
       <button
         onClick={disconnectWallet}
         className="ml-1 sm:ml-2 text-slate-500 hover:text-red-400 text-[10px] transition cursor-pointer p-0.5 rounded hover:bg-[#1E2230]"

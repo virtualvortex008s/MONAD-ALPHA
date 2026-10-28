@@ -384,7 +384,7 @@ export const EvenOddDice: React.FC<EvenOddDiceProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5 sm:gap-2">
             {[0.1, 0.5, 1.0, 2.0].map((amount) => (
               <button
                 key={amount}
@@ -394,7 +394,7 @@ export const EvenOddDice: React.FC<EvenOddDiceProps> = ({
                   setWager(amount);
                   setCustomInput("");
                 }}
-                className={`py-2 px-3 rounded-xl border text-xs font-mono font-bold transition cursor-pointer ${
+                className={`py-2 px-1.5 sm:px-3 rounded-xl border text-[11px] sm:text-xs font-mono font-bold transition cursor-pointer truncate ${
                   wager === amount && !customInput
                     ? "bg-[#7053F5] text-white border-[#7053F5] shadow-[0_0_12px_rgba(112,83,245,0.4)]"
                     : "bg-[#13161F] border-[#171922] text-slate-300 hover:text-white hover:border-slate-700"
@@ -515,15 +515,15 @@ export const EvenOddDice: React.FC<EvenOddDiceProps> = ({
             </div>
             <div className="flex items-center justify-between text-slate-300">
               <span>Client Seed (Address):</span>
-              <span className="text-white truncate max-w-[200px]">{lastOutcome.proof.clientSeed}</span>
+              <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-white">{lastOutcome.proof.clientSeed}</span>
             </div>
             <div className="flex items-center justify-between text-slate-300">
               <span>Block Hash:</span>
-              <span className="text-white truncate max-w-[200px]">{lastOutcome.proof.blockHash}</span>
+              <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-white">{lastOutcome.proof.blockHash}</span>
             </div>
             <div className="flex items-center justify-between text-slate-300">
               <span>Combined SHA-256:</span>
-              <span className="text-[#00FFA3] truncate max-w-[200px]">{lastOutcome.proof.combinedHash}</span>
+              <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-[#00FFA3]">{lastOutcome.proof.combinedHash}</span>
             </div>
           </div>
         )}
@@ -543,7 +543,7 @@ export const EvenOddDice: React.FC<EvenOddDiceProps> = ({
             No rolls recorded in this session yet. Choose EVEN or ODD to roll!
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="responsive-table-container">
             <table className="w-full text-left font-mono text-xs">
               <thead>
                 <tr className="border-b border-[#171922] text-slate-500 text-[11px]">
@@ -617,13 +617,13 @@ export const EvenOddDice: React.FC<EvenOddDiceProps> = ({
                     {expandedProofId === item.id && (
                       <tr className="bg-[#13161F]">
                         <td colSpan={7} className="p-3 text-[10px] text-slate-400 space-y-1">
-                          <div>
-                            <span className="text-slate-500">Block Hash:</span>{" "}
-                            <span className="text-slate-300 font-mono">{item.proof.blockHash}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-slate-500 shrink-0">Block Hash:</span>{" "}
+                            <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-slate-300">{item.proof.blockHash}</span>
                           </div>
-                          <div>
-                            <span className="text-slate-500">Combined Hash:</span>{" "}
-                            <span className="text-[#00FFA3] font-mono">{item.proof.combinedHash}</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-slate-500 shrink-0">Combined Hash:</span>{" "}
+                            <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-[#00FFA3]">{item.proof.combinedHash}</span>
                           </div>
                         </td>
                       </tr>

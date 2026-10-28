@@ -151,43 +151,43 @@ export const LiveBlockStream: React.FC<LiveBlockStreamProps> = ({
       </div>
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3">
         {/* Block Height */}
-        <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3">
-          <div className="flex items-center justify-between text-slate-400 text-[11px] font-mono">
+        <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-2.5 sm:p-3">
+          <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-[11px] font-mono">
             <span>Current Height</span>
             <MonadLogo size={12} />
           </div>
-          <div className="mt-1 font-mono text-xl font-black text-white flex items-baseline gap-1">
+          <div className="mt-1 font-mono text-base sm:text-xl font-black text-white flex items-baseline gap-1 truncate">
             <span>#{blockNumberFormatted}</span>
           </div>
-          <div className="text-[10px] text-emerald-400 font-mono mt-0.5 flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+          <div className="text-[10px] text-emerald-400 font-mono mt-0.5 flex items-center gap-1 truncate">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shrink-0" />
             <span>Mined ~{secondsAgo}s ago</span>
           </div>
         </div>
 
         {/* Transactions in Block */}
-        <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3">
-          <div className="flex items-center justify-between text-slate-400 text-[11px] font-mono">
+        <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-2.5 sm:p-3">
+          <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-[11px] font-mono">
             <span>Txs In Block</span>
             <Activity className="h-3.5 w-3.5 text-[#7053F5]" />
           </div>
-          <div className="mt-1 font-mono text-xl font-black text-[#7053F5]">
+          <div className="mt-1 font-mono text-base sm:text-xl font-black text-[#7053F5] truncate">
             {currentBlock ? currentBlock.transactionsCount : "—"}
           </div>
-          <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+          <div className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">
             Parallel execution
           </div>
         </div>
 
         {/* Gas Used */}
-        <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3">
-          <div className="flex items-center justify-between text-slate-400 text-[11px] font-mono">
+        <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-2.5 sm:p-3">
+          <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-[11px] font-mono">
             <span>Gas Consumed</span>
             <Zap className="h-3.5 w-3.5 text-amber-400" />
           </div>
-          <div className="mt-1 font-mono text-xl font-black text-slate-200 truncate">
+          <div className="mt-1 font-mono text-base sm:text-xl font-black text-slate-200 truncate">
             {currentBlock ? parseInt(currentBlock.gasUsed).toLocaleString() : "—"}
           </div>
           <div className="text-[10px] text-slate-500 font-mono mt-0.5 truncate">
@@ -196,15 +196,15 @@ export const LiveBlockStream: React.FC<LiveBlockStreamProps> = ({
         </div>
 
         {/* Execution Finality */}
-        <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3">
-          <div className="flex items-center justify-between text-slate-400 text-[11px] font-mono">
+        <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-2.5 sm:p-3">
+          <div className="flex items-center justify-between text-slate-400 text-[10px] sm:text-[11px] font-mono">
             <span>Validator Finality</span>
             <Clock className="h-3.5 w-3.5 text-emerald-400" />
           </div>
-          <div className="mt-1 font-mono text-xl font-black text-emerald-400">
+          <div className="mt-1 font-mono text-base sm:text-xl font-black text-emerald-400 truncate">
             0.81s
           </div>
-          <div className="text-[10px] text-slate-400 font-mono mt-0.5">
+          <div className="text-[10px] text-slate-400 font-mono mt-0.5 truncate">
             Single-slot finality
           </div>
         </div>
@@ -246,8 +246,8 @@ export const LiveBlockStream: React.FC<LiveBlockStreamProps> = ({
                 </div>
                 <div className="text-[10px] text-slate-500 mt-0.5 flex items-center justify-between gap-3">
                   <span>{b.transactionsCount} txs</span>
-                  <span className="truncate max-w-[80px]">
-                    {b.hash.slice(0, 6)}...
+                  <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-slate-500">
+                    {b.hash}
                   </span>
                 </div>
               </a>
@@ -289,12 +289,12 @@ export const LiveBlockStream: React.FC<LiveBlockStreamProps> = ({
                         className="font-mono text-xs font-bold text-slate-200 hover:text-[#7053F5] flex items-center gap-1 transition-colors"
                         title="View verified transaction on Monad Explorer"
                       >
-                        <span className="text-white">
-                          {tx.hash.slice(0, 10)}...{tx.hash.slice(-8)}
+                        <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-white">
+                          {tx.hash}
                         </span>
-                        <ExternalLink className="h-3 w-3 text-[#7053F5]" />
+                        <ExternalLink className="h-3 w-3 text-[#7053F5] shrink-0" />
                       </a>
-                      <span className="flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.2 font-mono text-[9px] font-bold text-emerald-400 border border-emerald-500/20">
+                      <span className="flex items-center gap-1 rounded bg-emerald-500/10 px-1.5 py-0.2 font-mono text-[9px] font-bold text-emerald-400 border border-emerald-500/20 shrink-0">
                         <CheckCircle2 className="h-2.5 w-2.5" />
                         MINED
                       </span>
@@ -303,18 +303,24 @@ export const LiveBlockStream: React.FC<LiveBlockStreamProps> = ({
                     <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5 font-mono">
                       <span
                         onClick={() => onSelectAddress && tx.from && onSelectAddress(tx.from)}
-                        className="hover:text-slate-300 cursor-pointer"
+                        className="hover:text-slate-300 cursor-pointer flex items-center gap-1"
                       >
-                        From: {tx.from ? `${tx.from.slice(0, 6)}...${tx.from.slice(-4)}` : "—"}
+                        <span>From:</span>
+                        <span className="font-mono text-xs sm:text-sm truncate max-w-[90px] sm:max-w-[140px] inline-block align-bottom text-slate-400">
+                          {tx.from || "—"}
+                        </span>
                       </span>
                       {tx.to && (
                         <>
-                          <ArrowRight className="h-2.5 w-2.5 text-slate-600" />
+                          <ArrowRight className="h-2.5 w-2.5 text-slate-600 shrink-0" />
                           <span
                             onClick={() => onSelectAddress && onSelectAddress(tx.to!)}
-                            className="hover:text-slate-300 cursor-pointer"
+                            className="hover:text-slate-300 cursor-pointer flex items-center gap-1"
                           >
-                            To: {tx.to.slice(0, 6)}...{tx.to.slice(-4)}
+                            <span>To:</span>
+                            <span className="font-mono text-xs sm:text-sm truncate max-w-[90px] sm:max-w-[140px] inline-block align-bottom text-slate-400">
+                              {tx.to}
+                            </span>
                           </span>
                         </>
                       )}

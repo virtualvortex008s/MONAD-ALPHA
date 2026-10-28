@@ -142,14 +142,14 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
                   {token.symbol.replace("$", "").slice(0, 3)}
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-black text-white">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <h2 className="text-lg sm:text-xl font-black text-white">
                       {token.symbol}
                     </h2>
-                    <span className="text-sm text-slate-400 font-medium">
+                    <span className="text-xs sm:text-sm text-slate-400 font-medium truncate max-w-[110px] sm:max-w-none">
                       {token.name}
                     </span>
-                    <span className="rounded bg-[#7053F5]/15 px-2 py-0.5 font-mono text-[10px] font-bold text-[#7053F5] border border-[#7053F5]/30">
+                    <span className="rounded bg-[#7053F5]/15 px-2 py-0.5 font-mono text-[10px] font-bold text-[#7053F5] border border-[#7053F5]/30 shrink-0">
                       Alpha {token.alphaScore}
                     </span>
                   </div>
@@ -157,15 +157,15 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
                   <div className="flex items-center gap-2 mt-1">
                     <button
                       onClick={handleCopy}
-                      className="flex items-center gap-1 font-mono text-xs text-slate-400 hover:text-white transition-colors"
+                      className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors cursor-pointer"
                     >
-                      <span>
-                        {token.address.slice(0, 8)}...{token.address.slice(-6)}
+                      <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block">
+                        {token.address}
                       </span>
                       {copiedAddress ? (
-                        <Check className="h-3 w-3 text-emerald-400" />
+                        <Check className="h-3 w-3 text-emerald-400 shrink-0" />
                       ) : (
-                        <Copy className="h-3 w-3" />
+                        <Copy className="h-3 w-3 shrink-0" />
                       )}
                     </button>
                     <span className="text-slate-600">•</span>
@@ -473,9 +473,8 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
                         <span className="text-slate-500 text-[11px] block">
                           Deployer Address
                         </span>
-                        <span className="font-mono text-[10px] text-slate-400 truncate block">
-                          {token.deployerAddress.slice(0, 8)}...
-                          {token.deployerAddress.slice(-6)}
+                        <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-slate-400">
+                          {token.deployerAddress}
                         </span>
                       </div>
                     </div>
@@ -540,7 +539,7 @@ export const TokenDossierDrawer: React.FC<TokenDossierDrawerProps> = ({
                     {token.smartAccumulators.map((acc, idx) => (
                       <tr key={idx} className="hover:bg-[#191C27] transition-colors">
                         <td className="py-2.5">
-                          <span className="font-mono text-xs font-semibold text-slate-200">
+                          <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block font-semibold text-slate-200">
                             {acc.walletAddress}
                           </span>
                           <span className="block text-[10px] text-slate-500">

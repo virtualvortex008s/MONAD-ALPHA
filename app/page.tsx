@@ -165,18 +165,18 @@ function DashboardContent() {
       {/* 1. TOP 4 LARGE METRIC CARDS */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Card 1: Network TPS */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-3.5 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               NETWORK TPS
             </span>
-            <span className="flex h-2 w-2 rounded-full bg-[#00FFA3] animate-pulse" />
+            <span className="flex h-2 w-2 rounded-full bg-[#00FFA3] animate-pulse shrink-0" />
           </div>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">
+            <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-mono tracking-tight truncate">
               9,374
             </span>
-            <span className="text-[11px] font-mono text-[#00FFA3] font-bold">
+            <span className="text-[11px] font-mono text-[#00FFA3] font-bold shrink-0">
               PEAK 10K
             </span>
           </div>
@@ -187,7 +187,7 @@ function DashboardContent() {
         </div>
 
         {/* Card 2: Active Wallets */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-3.5 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               ACTIVE WALLETS
@@ -195,10 +195,10 @@ function DashboardContent() {
             <span className="text-[10px] font-mono text-[#7053F5] font-bold">24H</span>
           </div>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">
+            <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-mono tracking-tight truncate">
               142,830
             </span>
-            <span className="text-[11px] font-mono text-[#00FFA3] font-bold">
+            <span className="text-[11px] font-mono text-[#00FFA3] font-bold shrink-0">
               +12.4%
             </span>
           </div>
@@ -209,7 +209,7 @@ function DashboardContent() {
         </div>
 
         {/* Card 3: 24H Volume */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-3.5 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               24H VOLUME
@@ -217,10 +217,10 @@ function DashboardContent() {
             <span className="text-[10px] font-mono text-emerald-400 font-bold">DEXES</span>
           </div>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">
+            <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-mono tracking-tight truncate">
               $284M
             </span>
-            <span className="text-[11px] font-mono text-[#00FFA3] font-bold">
+            <span className="text-[11px] font-mono text-[#00FFA3] font-bold shrink-0">
               +34.8%
             </span>
           </div>
@@ -231,7 +231,7 @@ function DashboardContent() {
         </div>
 
         {/* Card 4: New Tokens */}
-        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
+        <div className="rounded-xl border border-[#171922] bg-[#0D0F14] p-3.5 sm:p-5 hover:border-[#7053F5]/40 transition shadow-lg group">
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-mono uppercase tracking-wider text-slate-500 font-semibold">
               NEW TOKENS
@@ -241,10 +241,10 @@ function DashboardContent() {
             </span>
           </div>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">
+            <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-mono tracking-tight truncate">
               38
             </span>
-            <span className="text-[11px] font-mono text-amber-400 font-bold">
+            <span className="text-[11px] font-mono text-amber-400 font-bold shrink-0">
               Deployed
             </span>
           </div>
@@ -258,19 +258,19 @@ function DashboardContent() {
       {/* 2. SPLIT TWO-COLUMN LIVE ACTIVITY SECTION */}
       <div className="flex flex-col lg:grid lg:grid-cols-12 gap-6">
         {/* Left Column: Live Alpha Signals ● Live */}
-        <div className="lg:col-span-6 rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 shadow-xl flex flex-col">
+        <div className="lg:col-span-6 rounded-xl border border-[#171922] bg-[#0D0F14] p-3.5 sm:p-5 shadow-xl flex flex-col">
           <div className="flex items-center justify-between pb-3.5 border-b border-[#171922] mb-4">
             <div className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-[#7053F5]" />
+              <Activity className="h-4 w-4 text-[#7053F5] shrink-0" />
               <h2 className="text-sm font-bold text-white tracking-tight">
                 Live Alpha Signals
               </h2>
-              <span className="flex items-center gap-1 font-mono text-[10px] text-[#00FFA3] ml-1">
+              <span className="flex items-center gap-1 font-mono text-[10px] text-[#00FFA3] ml-1 shrink-0">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#00FFA3] animate-ping" />
                 Live
               </span>
             </div>
-            <span className="text-[11px] font-mono text-slate-500">Real-time Inflow Scanner</span>
+            <span className="text-[11px] font-mono text-slate-500 hidden sm:inline">Real-time Inflow Scanner</span>
           </div>
 
           {/* Rows of Live Signals */}
@@ -278,21 +278,21 @@ function DashboardContent() {
             {/* Signal 1: 88 Green - SMART MONEY $MONX */}
             <div
               onClick={() => handleSelectTokenBySymbol("MONX")}
-              className="flex items-center justify-between gap-3.5 p-3 rounded-lg border border-[#171922] bg-[#060709] hover:bg-[#13161F] hover:border-[#7053F5]/50 transition cursor-pointer group"
+              className="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-lg border border-[#171922] bg-[#060709] hover:bg-[#13161F] hover:border-[#7053F5]/50 transition cursor-pointer group"
             >
-              <div className="flex items-center gap-3">
-                <ScoreGauge score={88} size={42} strokeWidth={3.5} />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="rounded bg-[#7053F5]/20 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#7053F5] border border-[#7053F5]/30">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                <ScoreGauge score={88} size={40} strokeWidth={3.5} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <span className="rounded bg-[#7053F5]/20 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#7053F5] border border-[#7053F5]/30 shrink-0">
                       SMART MONEY
                     </span>
-                    <span className="text-xs font-bold text-white group-hover:text-[#7053F5] transition-colors">
+                    <span className="text-xs font-bold text-white group-hover:text-[#7053F5] transition-colors truncate">
                       $MONX
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1 leading-tight">
-                    5 wallets accumulated 2.4% of supply in 18 min · <span className="font-mono text-slate-500">2m ago</span>
+                  <p className="text-[11px] text-slate-400 mt-1 leading-tight truncate">
+                    5 wallets accumulated 2.4% in 18 min · <span className="font-mono text-slate-500">2m ago</span>
                   </p>
                 </div>
               </div>
@@ -302,21 +302,21 @@ function DashboardContent() {
             {/* Signal 2: 91 Green - WHALE ALERT $ECHO */}
             <div
               onClick={() => handleSelectTokenBySymbol("ECHO")}
-              className="flex items-center justify-between gap-3.5 p-3 rounded-lg border border-[#171922] bg-[#060709] hover:bg-[#13161F] hover:border-[#7053F5]/50 transition cursor-pointer group"
+              className="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-lg border border-[#171922] bg-[#060709] hover:bg-[#13161F] hover:border-[#7053F5]/50 transition cursor-pointer group"
             >
-              <div className="flex items-center gap-3">
-                <ScoreGauge score={91} size={42} strokeWidth={3.5} />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="rounded bg-[#00FFA3]/20 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#00FFA3] border border-[#00FFA3]/30">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                <ScoreGauge score={91} size={40} strokeWidth={3.5} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <span className="rounded bg-[#00FFA3]/20 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#00FFA3] border border-[#00FFA3]/30 shrink-0">
                       WHALE ALERT
                     </span>
-                    <span className="text-xs font-bold text-white group-hover:text-[#00FFA3] transition-colors">
+                    <span className="text-xs font-bold text-white group-hover:text-[#00FFA3] transition-colors truncate">
                       $ECHO
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1 leading-tight">
-                    0x82...19F purchased $212K in a single transaction · <span className="font-mono text-slate-500">7m ago</span>
+                  <p className="text-[11px] text-slate-400 mt-1 leading-tight truncate">
+                    0x82...19F bought $212K in single tx · <span className="font-mono text-slate-500">7m ago</span>
                   </p>
                 </div>
               </div>
@@ -326,21 +326,21 @@ function DashboardContent() {
             {/* Signal 3: 81 Amber - VOLUME SPIKE $FLUX */}
             <div
               onClick={() => handleSelectTokenBySymbol("FLUX")}
-              className="flex items-center justify-between gap-3.5 p-3 rounded-lg border border-[#171922] bg-[#060709] hover:bg-[#13161F] hover:border-[#F59E0B]/50 transition cursor-pointer group"
+              className="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-lg border border-[#171922] bg-[#060709] hover:bg-[#13161F] hover:border-[#F59E0B]/50 transition cursor-pointer group"
             >
-              <div className="flex items-center gap-3">
-                <ScoreGauge score={81} size={42} strokeWidth={3.5} />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="rounded bg-[#F59E0B]/20 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#F59E0B] border border-[#F59E0B]/30">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                <ScoreGauge score={81} size={40} strokeWidth={3.5} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <span className="rounded bg-[#F59E0B]/20 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#F59E0B] border border-[#F59E0B]/30 shrink-0">
                       VOLUME SPIKE
                     </span>
-                    <span className="text-xs font-bold text-white group-hover:text-[#F59E0B] transition-colors">
+                    <span className="text-xs font-bold text-white group-hover:text-[#F59E0B] transition-colors truncate">
                       $FLUX
                     </span>
                   </div>
-                  <p className="text-[11px] text-slate-400 mt-1 leading-tight">
-                    Volume increased 380% vs 7-day rolling baseline · <span className="font-mono text-slate-500">14m ago</span>
+                  <p className="text-[11px] text-slate-400 mt-1 leading-tight truncate">
+                    Volume up 380% vs 7-day baseline · <span className="font-mono text-slate-500">14m ago</span>
                   </p>
                 </div>
               </div>
@@ -350,16 +350,16 @@ function DashboardContent() {
             {/* Signal 4: 83 Amber - ACCUMULATION $SPIRE */}
             <div
               onClick={() => handleSelectTokenBySymbol("SPIRE")}
-              className="flex items-center justify-between gap-3.5 p-3 rounded-lg border border-[#171922] bg-[#060709] hover:bg-[#13161F] hover:border-[#F59E0B]/50 transition cursor-pointer group"
+              className="flex items-center justify-between gap-3 p-2.5 sm:p-3 rounded-lg border border-[#171922] bg-[#060709] hover:bg-[#13161F] hover:border-[#F59E0B]/50 transition cursor-pointer group"
             >
-              <div className="flex items-center gap-3">
-                <ScoreGauge score={83} size={42} strokeWidth={3.5} />
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="rounded bg-[#7053F5]/20 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#7053F5] border border-[#7053F5]/30">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                <ScoreGauge score={83} size={40} strokeWidth={3.5} />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-1.5 sm:gap-2">
+                    <span className="rounded bg-[#7053F5]/20 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#7053F5] border border-[#7053F5]/30 shrink-0">
                       ACCUMULATION
                     </span>
-                    <span className="text-xs font-bold text-white group-hover:text-[#7053F5] transition-colors">
+                    <span className="text-xs font-bold text-white group-hover:text-[#7053F5] transition-colors truncate">
                       $SPIRE
                     </span>
                   </div>

@@ -110,7 +110,7 @@ export const AiAuditModal: React.FC<AiAuditModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="relative w-full max-w-lg rounded-2xl border border-[#7053F5]/30 bg-[#0D0F14] p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-150"
+        className="relative w-full max-w-lg rounded-2xl border border-[#7053F5]/30 bg-[#0D0F14] p-4 sm:p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -146,9 +146,11 @@ export const AiAuditModal: React.FC<AiAuditModalProps> = ({
 
         {/* Contract Address Bar */}
         <div className="flex items-center justify-between p-2.5 rounded-xl bg-[#060709] border border-[#171922] font-mono text-xs">
-          <div className="flex items-center gap-2 truncate">
-            <span className="text-slate-500 text-[10px] uppercase">Contract:</span>
-            <span className="text-slate-300 truncate">{token.address}</span>
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-slate-500 text-[10px] uppercase shrink-0">Contract:</span>
+            <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-slate-300">
+              {token.address}
+            </span>
           </div>
           <button
             type="button"
@@ -245,7 +247,7 @@ export const AiAuditModal: React.FC<AiAuditModalProps> = ({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-between gap-3 pt-2">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 pt-2">
           <a
             href={`${MONAD_TESTNET_CONFIG.blockExplorer}/token/${token.address}`}
             target="_blank"

@@ -5,11 +5,11 @@ import { MonadLogo } from "./MonadLogo";
 
 export const Footer: React.FC = () => {
   return (
-    <footer className="mt-16 border-t border-[#171922] bg-[#060709] py-8 text-xs text-slate-500">
-      <div className="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3">
+    <footer className="mt-12 sm:mt-16 border-t border-[#171922] bg-[#060709] py-6 sm:py-8 text-xs text-slate-500">
+      <div className="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-4 px-3 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5 sm:gap-3 text-center sm:text-left">
           <div className="flex items-center gap-2">
-            <MonadLogo size={22} className="rounded-full shadow-[0_0_10px_rgba(112,83,245,0.35)]" />
+            <MonadLogo size={22} className="rounded-full shadow-[0_0_10px_rgba(112,83,245,0.35)] shrink-0" />
             <div className="flex items-baseline gap-1">
               <span className="font-extrabold tracking-tight text-white font-sans">
                 MONAD
@@ -21,12 +21,12 @@ export const Footer: React.FC = () => {
           </div>
           <span>•</span>
           <span className="flex items-center gap-1.5 text-emerald-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            All Systems Operational
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shrink-0" />
+            <span>All Systems Operational</span>
           </span>
         </div>
 
-        <div className="flex flex-wrap items-center gap-6 text-[11px]">
+        <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3.5 sm:gap-6 text-[11px]">
           <a
             href="https://docs.monad.xyz"
             target="_blank"

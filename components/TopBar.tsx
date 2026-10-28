@@ -159,7 +159,7 @@ export const TopBar: React.FC<TopBarProps> = ({
     const handleGlobalKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        if (window.innerWidth < 640) {
+        if (window.innerWidth < 768) {
           mobileInputRef.current?.focus();
           mobileInputRef.current?.select();
         } else {
@@ -328,7 +328,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                           </span>
                         </div>
                         <div className="flex items-center gap-2 mt-0.5">
-                          <span className="font-mono text-[10px] text-slate-500 truncate max-w-[130px] sm:max-w-xs">
+                          <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-slate-500">
                             {token.address}
                           </span>
                           <a
@@ -413,142 +413,157 @@ export const TopBar: React.FC<TopBarProps> = ({
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full bg-[#060709]/90 backdrop-blur-md border-b border-[#171922] px-4 lg:px-8 py-3 ${className}`}
+      className={`sticky top-0 z-50 w-full bg-[#060709]/95 backdrop-blur-md border-b border-[#171922] ${className}`}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-        {/* Left: Brand Logo */}
-        <div className="flex items-center shrink-0">
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <MonadLogo size={32} className="transition-transform duration-200 group-hover:scale-105" />
-            <span className="font-bold text-lg tracking-tight text-white">
-              Monad <span className="text-[#7053F5]">Alpha</span>
-            </span>
-          </Link>
-        </div>
+      <div className="max-w-7xl mx-auto">
+        {/* Row 1 on Mobile (< 768px): Logo on Left, Compact Connect MetaMask on Right */}
+        {/* Desktop View (>= 768px): Horizontal layout: Logo Left, Search Centered (max-w-md), Connect MetaMask Right */}
+        <div className="flex items-center justify-between gap-3 px-3 sm:px-6 lg:px-8 py-2.5 sm:py-3">
+          {/* Left: Brand Logo */}
+          <div className="flex items-center shrink-0">
+            <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group">
+              <MonadLogo size={28} className="sm:w-8 sm:h-8 transition-transform duration-200 group-hover:scale-105" />
+              <span className="font-bold text-base sm:text-lg tracking-tight text-white whitespace-nowrap">
+                Monad <span className="text-[#7053F5]">Alpha</span>
+              </span>
+            </Link>
+          </div>
 
-        {/* Center: Token Contract Search Bar (Desktop / Tablet: sm+) */}
-        <div ref={desktopContainerRef} className="flex-1 max-w-xl mx-auto hidden sm:block relative">
-          <div
-            className={`relative flex items-center rounded-xl bg-[#0D0F14] border border-[#171922] transition-all duration-200 ${
-              isDropdownOpen
-                ? "border-[#7053F5] ring-2 ring-[#7053F5]/30 shadow-[0_0_20px_rgba(112,83,245,0.25)]"
-                : "hover:border-slate-700"
-            }`}
-          >
-            {/* Left Search Icon */}
-            <div className="pl-3.5 pr-2 flex items-center pointer-events-none text-[#7053F5]">
-              <Search className="h-4 w-4 shrink-0" />
+          {/* Desktop Search Bar (>= 768px): Centered, max-w-md, with zero floating over buttons */}
+          <div ref={desktopContainerRef} className="hidden md:block flex-1 max-w-md mx-auto relative">
+            <div
+              className={`relative flex items-center rounded-xl bg-[#0D0F14] border border-[#171922] transition-all duration-200 ${
+                isDropdownOpen
+                  ? "border-[#7053F5] ring-2 ring-[#7053F5]/30 shadow-[0_0_20px_rgba(112,83,245,0.25)]"
+                  : "hover:border-slate-700"
+              }`}
+            >
+              {/* Left Search Icon */}
+              <div className="pl-3.5 pr-2 flex items-center pointer-events-none text-[#7053F5]">
+                <Search className="h-4 w-4 shrink-0" />
+              </div>
+
+              {/* Search Input */}
+              <input
+                ref={desktopInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsDropdownOpen(true);
+                  setSelectedIndex(0);
+                }}
+                onFocus={() => setIsDropdownOpen(true)}
+                onKeyDown={handleInputKeyDown}
+                placeholder="Search contract address (0x...) or symbol..."
+                className="w-full bg-transparent py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 font-mono focus:outline-none min-w-0 pr-24"
+                autoComplete="off"
+                spellCheck="false"
+              />
+
+              {/* Right Action Elements */}
+              <div className="absolute right-2.5 flex items-center gap-1.5">
+                {trimmedQuery ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleClear}
+                      className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-[#1E2230] transition cursor-pointer"
+                      title="Clear input (Esc)"
+                      aria-label="Clear search input"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleExecuteSearch}
+                      className="px-2 py-0.5 rounded-md bg-[#7053F5] hover:bg-[#5E3FEB] text-white text-[11px] font-mono font-bold transition flex items-center gap-1 cursor-pointer shadow-sm"
+                      title="Search / Inspect"
+                    >
+                      <span>Search</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </button>
+                  </>
+                ) : (
+                  <kbd className="inline-flex items-center px-1.5 py-0.5 rounded border border-[#1E2230] bg-[#12141C] text-[10px] font-mono text-slate-400 select-none">
+                    {isMac ? "⌘K" : "Ctrl+K"}
+                  </kbd>
+                )}
+              </div>
             </div>
 
-            {/* Search Input */}
-            <input
-              ref={desktopInputRef}
-              type="text"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setIsDropdownOpen(true);
-                setSelectedIndex(0);
-              }}
-              onFocus={() => setIsDropdownOpen(true)}
-              onKeyDown={handleInputKeyDown}
-              placeholder="Search token contract address (0x...) or symbol on Monad..."
-              className="w-full bg-transparent py-2.5 text-xs sm:text-sm text-white placeholder-slate-500 font-mono focus:outline-none min-w-0 pr-24"
-              autoComplete="off"
-              spellCheck="false"
-            />
+            {/* Desktop Search Dropdown Overlay */}
+            {renderDropdown()}
+          </div>
 
-            {/* Right Action Elements */}
-            <div className="absolute right-2.5 flex items-center gap-1.5">
-              {trimmedQuery ? (
-                <>
-                  <button
-                    type="button"
-                    onClick={handleClear}
-                    className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-[#1E2230] transition cursor-pointer"
-                    title="Clear input (Esc)"
-                    aria-label="Clear search input"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleExecuteSearch}
-                    className="px-2 py-0.5 rounded-md bg-[#7053F5] hover:bg-[#5E3FEB] text-white text-[11px] font-mono font-bold transition flex items-center gap-1 cursor-pointer shadow-sm"
-                    title="Search / Inspect"
-                  >
-                    <span>Search</span>
-                    <ArrowRight className="h-3 w-3" />
-                  </button>
-                </>
-              ) : (
-                <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 rounded border border-[#1E2230] bg-[#12141C] text-[10px] font-mono text-slate-400 select-none">
-                  {isMac ? "⌘K" : "Ctrl+K"}
-                </kbd>
-              )}
+          {/* Right: Connect MetaMask Wallet Button */}
+          <div className="flex items-center shrink-0">
+            <HeaderWalletButton />
+          </div>
+        </div>
+
+        {/* Mobile View (< 768px) Row 2: Full-width Search Bar placed directly beneath Row 1 with clean padding (px-3 py-2) */}
+        <div className="md:hidden px-3 py-2 border-t border-[#171922]/50">
+          <div ref={mobileContainerRef} className="relative w-full">
+            <div
+              className={`relative flex items-center rounded-xl bg-[#0D0F14] border border-[#171922] transition-all duration-200 ${
+                isDropdownOpen
+                  ? "border-[#7053F5] ring-1 ring-[#7053F5]/30 shadow-[0_0_15px_rgba(112,83,245,0.25)]"
+                  : "hover:border-slate-700"
+              }`}
+            >
+              <div className="pl-3 pr-2 flex items-center pointer-events-none text-[#7053F5]">
+                <Search className="h-3.5 w-3.5 shrink-0" />
+              </div>
+
+              <input
+                ref={mobileInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsDropdownOpen(true);
+                  setSelectedIndex(0);
+                }}
+                onFocus={() => setIsDropdownOpen(true)}
+                onKeyDown={handleInputKeyDown}
+                placeholder="Search contract address (0x...) or symbol..."
+                className="w-full bg-transparent py-2 text-xs text-white placeholder-slate-500 font-mono focus:outline-none min-w-0 pr-16"
+                autoComplete="off"
+                spellCheck="false"
+              />
+
+              <div className="absolute right-2 flex items-center gap-1">
+                {trimmedQuery ? (
+                  <>
+                    <button
+                      type="button"
+                      onClick={handleClear}
+                      className="p-1 rounded text-slate-400 hover:text-white"
+                      aria-label="Clear search"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleExecuteSearch}
+                      className="px-2 py-0.5 rounded-md bg-[#7053F5] hover:bg-[#5E3FEB] text-white text-[10px] font-mono font-bold transition cursor-pointer"
+                    >
+                      Go
+                    </button>
+                  </>
+                ) : (
+                  <kbd className="inline-flex items-center px-1 py-0.5 rounded border border-[#1E2230] bg-[#12141C] text-[9px] font-mono text-slate-400 select-none">
+                    {isMac ? "⌘K" : "Ctrl+K"}
+                  </kbd>
+                )}
+              </div>
             </div>
-          </div>
 
-          {/* Desktop Search Dropdown Overlay */}
-          {renderDropdown()}
-        </div>
-
-        {/* Right: Connect MetaMask Wallet Button */}
-        <div className="flex items-center gap-3 shrink-0">
-          <HeaderWalletButton />
-        </div>
-      </div>
-
-      {/* Mobile Search Bar: Appears on small screens below the header if screen width < 640px */}
-      <div ref={mobileContainerRef} className="sm:hidden mt-2 pt-2 border-t border-[#171922]/50 relative">
-        <div
-          className={`relative flex items-center rounded-xl bg-[#0D0F14] border border-[#171922] transition-all duration-200 ${
-            isDropdownOpen
-              ? "border-[#7053F5] ring-1 ring-[#7053F5]/30 shadow-[0_0_15px_rgba(112,83,245,0.25)]"
-              : "hover:border-slate-700"
-          }`}
-        >
-          <div className="pl-3 pr-2 flex items-center pointer-events-none text-[#7053F5]">
-            <Search className="h-3.5 w-3.5 shrink-0" />
-          </div>
-
-          <input
-            ref={mobileInputRef}
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setIsDropdownOpen(true);
-              setSelectedIndex(0);
-            }}
-            onFocus={() => setIsDropdownOpen(true)}
-            onKeyDown={handleInputKeyDown}
-            placeholder="Search contract (0x...) or symbol..."
-            className="w-full bg-transparent py-2 text-xs text-white placeholder-slate-500 font-mono focus:outline-none min-w-0 pr-16"
-            autoComplete="off"
-            spellCheck="false"
-          />
-
-          <div className="absolute right-2 flex items-center gap-1">
-            {trimmedQuery ? (
-              <button
-                type="button"
-                onClick={handleClear}
-                className="p-1 rounded text-slate-400 hover:text-white"
-                aria-label="Clear search"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            ) : (
-              <kbd className="inline-flex items-center px-1 py-0.5 rounded border border-[#1E2230] bg-[#12141C] text-[9px] font-mono text-slate-400 select-none">
-                {isMac ? "⌘K" : "Ctrl+K"}
-              </kbd>
-            )}
+            {/* Mobile Search Dropdown Overlay */}
+            {renderDropdown()}
           </div>
         </div>
-
-        {/* Mobile Search Dropdown Overlay */}
-        {renderDropdown()}
       </div>
     </header>
   );

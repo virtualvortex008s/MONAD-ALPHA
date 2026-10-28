@@ -84,7 +84,7 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+    <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8">
       {/* Top Breadcrumb & Actions */}
       <div className="flex items-center justify-between">
         <Link
@@ -128,8 +128,10 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
             </div>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <h1 className="text-base sm:text-2xl font-black text-white font-mono truncate max-w-[180px] sm:max-w-none">
-                  {primaryProfile.walletAddress}
+                <h1 className="text-base sm:text-2xl font-black text-white">
+                  <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block align-middle">
+                    {primaryProfile.walletAddress}
+                  </span>
                 </h1>
                 <span
                   className={`rounded-md border px-2 py-0.5 font-mono text-xs font-bold ${
@@ -219,7 +221,7 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
               </span>
             </div>
 
-            <div className="w-full overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+            <div className="responsive-table-container">
               <table className="w-full min-w-[550px] text-left text-xs font-mono">
                 <thead>
                   <tr className="border-b border-[#1E2230] bg-[#0E1017]/60 text-[10px] text-slate-400 uppercase tracking-wider">
@@ -365,13 +367,18 @@ export default function WalletProfilerPage({ params }: WalletPageProps) {
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-[#1E2230] pt-2 text-[10px] text-slate-500">
-                      <span>Tx: {trade.txHash}</span>
+                    <div className="flex items-center justify-between gap-2 border-t border-[#1E2230] pt-2 text-[10px] text-slate-500">
+                      <div className="flex items-center gap-1 min-w-0">
+                        <span className="shrink-0">Tx:</span>
+                        <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block align-bottom">
+                          {trade.txHash}
+                        </span>
+                      </div>
                       <a
                         href={`https://testnet.monadexplorer.com/tx/${trade.txHash}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:text-[#7053F5] transition-colors"
+                        className="hover:text-[#7053F5] transition-colors shrink-0"
                       >
                         <ExternalLink className="h-3 w-3" />
                       </a>

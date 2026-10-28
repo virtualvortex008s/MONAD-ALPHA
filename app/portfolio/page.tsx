@@ -251,8 +251,6 @@ export default function PortfolioPage() {
     );
   }
 
-  const formattedAddress = `${address.slice(0, 6)}...${address.slice(-4)}`;
-
   // Scaled dynamic 30-day SVG curve proportional to current portfolio valuation
   const baseline = Math.max(10, totalPortfolioValue);
   const chartPoints = [
@@ -282,27 +280,29 @@ export default function PortfolioPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* 1. Header Banner with Real Address & Live Sync */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-[#171922] bg-[#0D0F14] p-5 shadow-xl">
-        <div className="flex items-center gap-3.5">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#7053F5]/20 text-[#7053F5] border border-[#7053F5]/40 shadow-[0_0_15px_rgba(112, 83, 245,0.3)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl border border-[#171922] bg-[#0D0F14] p-4 sm:p-5 shadow-xl">
+        <div className="flex items-center gap-3.5 min-w-0">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#7053F5]/20 text-[#7053F5] border border-[#7053F5]/40 shadow-[0_0_15px_rgba(112, 83, 245,0.3)] shrink-0">
             <Briefcase className="h-5 w-5" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-lg sm:text-2xl font-black text-white tracking-tight">
                 Portfolio Intelligence
               </h1>
-              <span className="rounded bg-[#00FFA3]/15 px-2 py-0.5 text-[10px] font-mono font-bold text-[#00FFA3] border border-[#00FFA3]/30">
+              <span className="rounded bg-[#00FFA3]/15 px-2 py-0.5 text-[10px] font-mono font-bold text-[#00FFA3] border border-[#00FFA3]/30 shrink-0">
                 LIVE ON-CHAIN
               </span>
             </div>
             <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-slate-400 font-mono">
-              <span>Connected Account:</span>
-              <span className="text-white font-bold">{formattedAddress}</span>
+              <span className="shrink-0">Connected Account:</span>
+              <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-white font-bold align-middle">
+                {address}
+              </span>
               <button
                 type="button"
                 onClick={copyAddress}
-                className="hover:text-white transition p-0.5 text-slate-500"
+                className="hover:text-white transition p-0.5 text-slate-500 cursor-pointer"
                 title="Copy address"
               >
                 {isCopied ? <Check className="h-3 w-3 text-[#00FFA3]" /> : <Copy className="h-3 w-3" />}
@@ -321,7 +321,7 @@ export default function PortfolioPage() {
         </div>
 
         {/* Sync Status & Refresh Button */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full sm:w-auto">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 w-full sm:w-auto shrink-0">
           {lastSyncTime && (
             <span className="text-[11px] font-mono text-slate-500 text-center sm:text-right">
               Synced {lastSyncTime}
@@ -350,7 +350,7 @@ export default function PortfolioPage() {
             <span className="text-[10px] font-mono text-[#00FFA3] font-bold">USD</span>
           </div>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">
+            <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-mono tracking-tight truncate">
               ${totalPortfolioValue >= 1 ? totalPortfolioValue.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : totalPortfolioValue.toFixed(4)}
             </span>
           </div>
@@ -369,12 +369,12 @@ export default function PortfolioPage() {
             <span className="text-[10px] font-mono text-emerald-400 font-bold">UNREALIZED</span>
           </div>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl sm:text-4xl font-black text-[#00FFA3] font-mono tracking-tight">
+            <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#00FFA3] font-mono tracking-tight truncate">
               {totalPortfolioValue > 0 ? `+$${(totalPortfolioValue * 0.084).toFixed(2)}` : "$0.00"}
             </span>
           </div>
           <div className="mt-2 flex items-center gap-1.5 text-xs text-slate-400">
-            <span className="text-slate-500 font-mono">
+            <span className="text-slate-500 font-mono truncate">
               {totalPortfolioValue > 0 ? "+8.4% 24h market baseline" : "0.0% · No active positions"}
             </span>
           </div>
@@ -388,11 +388,11 @@ export default function PortfolioPage() {
             </span>
             <MonadLogo size={14} className="rounded-full" />
           </div>
-          <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">
+          <div className="flex items-baseline gap-2 mt-2 min-w-0">
+            <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-mono tracking-tight truncate">
               {monBalance.toFixed(4)}
             </span>
-            <span className="text-xs font-mono text-[#7053F5] font-bold">MON</span>
+            <span className="text-xs font-mono text-[#7053F5] font-bold shrink-0">MON</span>
           </div>
           <div className="mt-2 flex items-center gap-1.5 text-xs font-mono text-slate-400">
             <span>≈ ${(monBalance * MON_PRICE_USD).toFixed(2)} USD</span>
@@ -408,7 +408,7 @@ export default function PortfolioPage() {
             <span className="text-[10px] font-mono text-[#7053F5] font-bold">ON-CHAIN</span>
           </div>
           <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-3xl sm:text-4xl font-black text-[#7053F5] font-mono tracking-tight">
+            <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#7053F5] font-mono tracking-tight">
               {activityScore}
             </span>
             <span className="text-xs font-mono text-slate-500">/100</span>
@@ -685,12 +685,12 @@ export default function PortfolioPage() {
         </div>
 
         <div className="space-y-2 text-xs font-mono">
-          <div className="flex items-center justify-between p-3 rounded-lg border border-[#171922] bg-[#060709]">
-            <div className="flex items-center gap-3">
-              <span className="h-2 w-2 rounded-full bg-[#00FFA3] animate-pulse" />
-              <div>
-                <span className="text-white font-bold block">Account Status: Active on Monad Testnet</span>
-                <span className="text-slate-400 text-[11px]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-lg border border-[#171922] bg-[#060709]">
+            <div className="flex items-start sm:items-center gap-3 min-w-0">
+              <span className="h-2 w-2 rounded-full bg-[#00FFA3] animate-pulse shrink-0 mt-1 sm:mt-0" />
+              <div className="min-w-0">
+                <span className="text-white font-bold block truncate">Account Status: Active on Monad Testnet</span>
+                <span className="text-slate-400 text-[11px] break-words">
                   {txCount > 0
                     ? `Wallet has executed ${txCount} state transitions verified by Monad consensus.`
                     : "No transactions executed yet from this address. Use the Faucet or initiate a swap to activate on-chain history."}
@@ -701,7 +701,7 @@ export default function PortfolioPage() {
               href={`https://testnet.monadexplorer.com/address/${address}`}
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-1 rounded-md bg-[#13161F] px-3 py-1.5 text-[11px] text-slate-300 hover:text-white transition"
+              className="flex items-center justify-center gap-1 rounded-md bg-[#13161F] px-3 py-1.5 text-[11px] text-slate-300 hover:text-white transition shrink-0"
             >
               <span>View On Explorer</span>
               <ExternalLink className="h-3 w-3 text-slate-500" />

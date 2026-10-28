@@ -33,20 +33,20 @@ export default function SmartMoneyPage() {
     : allWallets.filter((w) => w.tag === selectedTag);
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+    <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8">
       {/* Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl border border-[#1E2230] bg-gradient-to-r from-[#12141C] via-[#161329] to-[#12141C] p-6 shadow-2xl">
+      <div className="relative overflow-hidden rounded-2xl border border-[#1E2230] bg-gradient-to-r from-[#12141C] via-[#161329] to-[#12141C] p-4 sm:p-6 shadow-2xl">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <MonadLogo size={18} className="rounded-full shadow-[0_0_10px_rgba(112, 83, 245,0.5)]" />
+              <MonadLogo size={18} className="rounded-full shadow-[0_0_10px_rgba(112, 83, 245,0.5)] shrink-0" />
               <span className="font-mono text-xs font-bold uppercase tracking-wider text-[#7053F5]">
                 Monad Smart Money Intelligence
               </span>
               <span className="text-slate-600">•</span>
               <span className="font-mono text-xs text-emerald-400">1,482 Wallets Tracked</span>
             </div>
-            <h1 className="mt-2 text-2xl sm:text-3xl font-black tracking-tight text-white">
+            <h1 className="mt-2 text-xl sm:text-3xl font-black tracking-tight text-white">
               Smart Money <span className="text-[#7053F5]">Tracker & Leaderboard</span>
             </h1>
             <p className="mt-1 text-xs sm:text-sm text-slate-400 max-w-2xl">
@@ -55,12 +55,12 @@ export default function SmartMoneyPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2 font-mono text-xs">
-            <div className="rounded-xl border border-[#1E2230] bg-[#0B0C10]/60 px-4 py-2.5">
+          <div className="flex items-center gap-2 font-mono text-xs shrink-0">
+            <div className="rounded-xl border border-[#1E2230] bg-[#0B0C10]/60 px-3.5 sm:px-4 py-2 sm:py-2.5">
               <span className="text-slate-500 block text-[10px]">24h Net Inflow</span>
               <span className="font-bold text-emerald-400">+$3.84M USD</span>
             </div>
-            <div className="rounded-xl border border-[#1E2230] bg-[#0B0C10]/60 px-4 py-2.5">
+            <div className="rounded-xl border border-[#1E2230] bg-[#0B0C10]/60 px-3.5 sm:px-4 py-2 sm:py-2.5">
               <span className="text-slate-500 block text-[10px]">Avg Win Rate</span>
               <span className="font-bold text-white">87.2%</span>
             </div>
@@ -71,25 +71,25 @@ export default function SmartMoneyPage() {
       </div>
 
       {/* 1. Tracked Wallets Leaderboard */}
-      <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-6 shadow-xl">
+      <div className="rounded-2xl border border-[#1E2230] bg-[#12141C] p-4 sm:p-6 shadow-xl">
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-[#1E2230] pb-4">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#7053F5]/20 text-[#7053F5]">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#7053F5]/20 text-[#7053F5] shrink-0">
               <Users className="h-4 w-4" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">Top 1% Smart Wallets Leaderboard</h2>
+              <h2 className="text-sm sm:text-base font-bold text-white">Top 1% Smart Wallets Leaderboard</h2>
               <p className="text-xs text-slate-400">Ranked by historical DEX swap win rate and cumulative realized PnL</p>
             </div>
           </div>
 
           {/* Filter pills */}
-          <div className="flex items-center gap-1 rounded-lg border border-[#1E2230] bg-[#0E1017] p-1 text-xs">
+          <div className="flex flex-wrap items-center gap-1 rounded-lg border border-[#1E2230] bg-[#0E1017] p-1 text-xs">
             {["ALL", "Whale", "Sniper", "Smart Trader"].map((tag) => (
               <button
                 key={tag}
                 onClick={() => setSelectedTag(tag)}
-                className={`rounded-md px-3 py-1 text-xs font-semibold transition-all ${
+                className={`rounded-md px-2.5 sm:px-3 py-1 text-xs font-semibold transition-all cursor-pointer ${
                   selectedTag === tag
                     ? "bg-[#7053F5] text-white shadow"
                     : "text-slate-400 hover:text-white"
@@ -102,7 +102,7 @@ export default function SmartMoneyPage() {
         </div>
 
         {/* Leaderboard Table */}
-        <div className="w-full overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="responsive-table-container">
           <table className="w-full min-w-[700px] text-left text-xs">
             <thead className="border-b border-[#1E2230] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
               <tr>
@@ -132,8 +132,10 @@ export default function SmartMoneyPage() {
                           href={`/wallet/${fullAddress}`}
                           className="font-mono text-xs font-bold text-white group-hover:text-[#7053F5] transition-colors flex items-center gap-1.5"
                         >
-                          <span>{wallet.walletAddress}</span>
-                          <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                          <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block">
+                            {wallet.walletAddress}
+                          </span>
+                          <ArrowUpRight className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                         </Link>
                       </div>
                       <span className="text-[10px] text-slate-500 block pl-8">
@@ -213,11 +215,11 @@ export default function SmartMoneyPage() {
       {/* 2. Live On-Chain Stream (Smart Money Flow & Monad Blocks) */}
       <div className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-1.5 rounded-xl border border-[#1E2230] bg-[#12141C] p-1 text-xs">
+          <div className="flex flex-wrap items-center gap-1.5 rounded-xl border border-[#1E2230] bg-[#12141C] p-1 text-xs">
             <button
               type="button"
               onClick={() => setActiveFeedTab("SMART_MONEY")}
-              className={`flex items-center gap-2 rounded-lg px-3.5 py-1.5 font-bold transition-all ${
+              className={`flex items-center gap-2 rounded-lg px-3 py-1.5 font-bold transition-all cursor-pointer ${
                 activeFeedTab === "SMART_MONEY"
                   ? "bg-[#7053F5] text-white shadow-[0_0_12px_rgba(112, 83, 245,0.35)]"
                   : "text-slate-400 hover:text-white"
@@ -231,7 +233,7 @@ export default function SmartMoneyPage() {
             <button
               type="button"
               onClick={() => setActiveFeedTab("BLOCKS")}
-              className={`flex items-center gap-2 rounded-lg px-3.5 py-1.5 font-bold transition-all ${
+              className={`flex items-center gap-2 rounded-lg px-3 py-1.5 font-bold transition-all cursor-pointer ${
                 activeFeedTab === "BLOCKS"
                   ? "bg-[#7053F5] text-white shadow-[0_0_12px_rgba(112, 83, 245,0.35)]"
                   : "text-slate-400 hover:text-white"

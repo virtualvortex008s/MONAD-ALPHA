@@ -146,7 +146,7 @@ export default function GamesPage() {
             </div>
             <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight font-mono flex items-center gap-2.5">
               <Gamepad2 className="h-7 w-7 text-[#7053F5] shrink-0" />
-              <span>Monad Arcade: On-Chain Prediction Games</span>
+              <span>Monad Arcade</span>
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-sans">
               Test your intuition on high-speed parallel execution with zero financial risk using Monad Testnet MON.
@@ -154,34 +154,34 @@ export default function GamesPage() {
           </div>
 
           {/* Connected Wallet Status & Balance Badge */}
-          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 bg-[#13161F] border border-[#171922] p-2.5 sm:p-3 rounded-2xl font-mono shrink-0">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 bg-[#13161F] border border-[#171922] p-2 sm:p-3 rounded-2xl font-mono shrink-0 max-w-full">
             {isConnected ? (
               <>
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0D0F14] border border-[#1E2230]">
-                  <div className="h-2 w-2 rounded-full bg-[#00FFA3] animate-pulse" />
-                  <span className="text-xs text-white font-bold">
-                    {address?.slice(0, 6)}...{address?.slice(-4)}
+                <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-[#0D0F14] border border-[#1E2230]">
+                  <div className="h-2 w-2 rounded-full bg-[#00FFA3] animate-pulse shrink-0" />
+                  <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block font-bold text-white">
+                    {address}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0D0F14] border border-[#1E2230]">
-                  <Coins className="h-3.5 w-3.5 text-[#00FFA3]" />
+                <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-[#0D0F14] border border-[#1E2230]">
+                  <Coins className="h-3.5 w-3.5 text-[#00FFA3] shrink-0" />
                   <span className="text-xs text-slate-400">Balance:</span>
-                  <span className="text-xs text-white font-bold">{effectiveBalance} MON</span>
+                  <span suppressHydrationWarning className="text-xs text-white font-bold">{effectiveBalance} MON</span>
                 </div>
 
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#7053F5]/20 border border-[#7053F5]/40 text-[#7053F5]">
-                  <Flame className="h-3.5 w-3.5 text-amber-400" />
-                  <span className="text-xs font-bold text-white">{currentStreak} Streak</span>
+                <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-xl bg-[#7053F5]/20 border border-[#7053F5]/40 text-[#7053F5]">
+                  <Flame className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+                  <span suppressHydrationWarning className="text-xs font-bold text-white">{currentStreak} Streak</span>
                 </div>
 
                 <button
                   type="button"
                   onClick={handleClaimFaucet}
                   title="Claim 5.0 Arcade Testnet MON for instant testing"
-                  className="px-2.5 py-1.5 rounded-xl bg-[#00FFA3]/15 hover:bg-[#00FFA3]/25 border border-[#00FFA3]/30 text-[11px] font-bold text-[#00FFA3] transition cursor-pointer flex items-center gap-1"
+                  className="px-2.5 py-1 sm:py-1.5 rounded-xl bg-[#00FFA3]/15 hover:bg-[#00FFA3]/25 border border-[#00FFA3]/30 text-[11px] font-bold text-[#00FFA3] transition cursor-pointer flex items-center gap-1"
                 >
-                  <Sparkles className="h-3 w-3" />
+                  <Sparkles className="h-3 w-3 shrink-0" />
                   <span>+5.0 Faucet</span>
                 </button>
               </>
@@ -304,20 +304,20 @@ export default function GamesPage() {
       )}
 
       {/* Navigation Tabs (Tab 1: Even or Odd Dice, Tab 2: Live Market Action) */}
-      <div className="flex items-center gap-2 border-b border-[#171922] pb-4 font-mono">
+      <div className="flex items-center gap-2 border-b border-[#171922] pb-4 font-mono overflow-x-auto no-scrollbar max-w-full">
         <button
           type="button"
           onClick={() => setActiveTab("dice")}
-          className={`flex items-center gap-2.5 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer shrink-0 ${
             activeTab === "dice"
               ? "bg-[#7053F5] text-white shadow-[0_0_20px_rgba(112,83,245,0.5)] border border-[#7053F5]"
               : "bg-[#0D0F14] text-slate-400 hover:text-white border border-[#171922] hover:border-slate-700"
           }`}
         >
-          <Dices className="h-4 w-4" />
+          <Dices className="h-4 w-4 shrink-0" />
           <span>Even or Odd Dice</span>
           <span
-            className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+            className={`text-[10px] px-1.5 py-0.2 rounded font-mono shrink-0 ${
               activeTab === "dice" ? "bg-white/20 text-white" : "bg-[#7053F5]/20 text-[#7053F5]"
             }`}
           >
@@ -328,16 +328,16 @@ export default function GamesPage() {
         <button
           type="button"
           onClick={() => setActiveTab("price")}
-          className={`flex items-center gap-2.5 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+          className={`flex items-center gap-2 px-3.5 sm:px-5 py-2.5 sm:py-3 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer shrink-0 ${
             activeTab === "price"
               ? "bg-[#7053F5] text-white shadow-[0_0_20px_rgba(112,83,245,0.5)] border border-[#7053F5]"
               : "bg-[#0D0F14] text-slate-400 hover:text-white border border-[#171922] hover:border-slate-700"
           }`}
         >
-          <TrendingUp className="h-4 w-4" />
+          <TrendingUp className="h-4 w-4 shrink-0" />
           <span>Live Market Action</span>
           <span
-            className={`text-[10px] px-1.5 py-0.2 rounded font-mono ${
+            className={`text-[10px] px-1.5 py-0.2 rounded font-mono shrink-0 ${
               activeTab === "price" ? "bg-white/20 text-white" : "bg-[#00FFA3]/20 text-[#00FFA3]"
             }`}
           >

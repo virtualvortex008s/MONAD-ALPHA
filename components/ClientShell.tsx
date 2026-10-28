@@ -89,7 +89,7 @@ export const ClientShell: React.FC<{ children: ReactNode }> = ({ children }) => 
           onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
           onSelectToken={(t) => router.push(`/alpha-scanner?token=${encodeURIComponent(t.address)}`)}
         />
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto">
+        <main className="flex-1 p-3 sm:p-6 lg:p-8 max-w-[1600px] w-full mx-auto min-w-0 overflow-x-hidden">
           {children}
         </main>
         <Footer />

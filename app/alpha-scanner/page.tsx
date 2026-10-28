@@ -302,7 +302,7 @@ function AlphaScannerContent() {
         </div>
 
         {/* Quick Filter Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0 no-scrollbar">
           <button
             type="button"
             onClick={() => setActiveTab("ALL")}
@@ -407,7 +407,7 @@ function AlphaScannerContent() {
 
       {/* 3. RADAR TOKEN DIRECTORY TABLE */}
       <div className="relative rounded-2xl border border-[#171922] bg-[#0D0F14] shadow-2xl overflow-hidden">
-        <div className="p-4 overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+        <div className="p-2 sm:p-4 responsive-table-container">
           <table className="w-full min-w-[900px] text-left text-xs font-mono">
             <thead className="border-b border-[#171922] bg-[#0A0C11]/80 text-slate-400 uppercase text-[10px] tracking-wider">
               <tr>
@@ -478,8 +478,8 @@ function AlphaScannerContent() {
                               </span>
                             </div>
                             <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className="text-[10px] text-slate-500 font-mono">
-                                {token.address.slice(0, 6)}...{token.address.slice(-4)}
+                              <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-slate-500">
+                                {token.address}
                               </span>
                               <button
                                 type="button"

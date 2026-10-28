@@ -195,7 +195,7 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
       : 0;
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+    <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8">
       {/* Top Breadcrumb & Quick Nav */}
       <div className="flex items-center justify-between">
         <Link
@@ -260,15 +260,15 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
               <div className="flex flex-wrap items-center gap-2 mt-2 text-xs font-mono text-slate-400">
                 <button
                   onClick={handleCopy}
-                  className="flex items-center gap-1.5 rounded-md bg-[#191C27] px-2 py-1 text-slate-300 hover:text-white transition-colors"
+                  className="flex items-center gap-1.5 rounded-md bg-[#191C27] px-2 py-1 text-slate-300 hover:text-white transition-colors cursor-pointer"
                 >
-                  <span className="truncate max-w-[120px] sm:max-w-none">
+                  <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block">
                     {token.address}
                   </span>
                   {copiedAddress ? (
-                    <Check className="h-3 w-3 text-emerald-400" />
+                    <Check className="h-3 w-3 text-emerald-400 shrink-0" />
                   ) : (
-                    <Copy className="h-3 w-3" />
+                    <Copy className="h-3 w-3 shrink-0" />
                   )}
                 </button>
                 <a
@@ -304,15 +304,15 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
             <div className="rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 min-w-0">
               <span className="text-[10px] text-slate-500 font-mono block uppercase">Performance</span>
               <div
-                className={`font-mono text-xs sm:text-sm font-bold flex items-center gap-1 ${
+                className={`font-mono text-xs sm:text-sm font-bold flex items-center gap-1 truncate ${
                   isPositive1h ? "text-emerald-400" : "text-rose-400"
                 }`}
               >
-                {isPositive1h ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
-                <span>1h: {token.change1h >= 0 ? "+" : ""}{token.change1h.toFixed(1)}%</span>
+                {isPositive1h ? <ArrowUpRight className="h-3.5 w-3.5 shrink-0" /> : <ArrowDownRight className="h-3.5 w-3.5 shrink-0" />}
+                <span className="truncate">1h: {token.change1h >= 0 ? "+" : ""}{token.change1h.toFixed(1)}%</span>
               </div>
               <div
-                className={`font-mono text-[11px] sm:text-xs font-bold ${
+                className={`font-mono text-[11px] sm:text-xs font-bold truncate ${
                   isPositive24h ? "text-emerald-400" : "text-rose-400"
                 }`}
               >
@@ -548,15 +548,15 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
               {/* Pay MON */}
               <div>
                 <label className="text-xs text-slate-400 mb-1.5 block">You Pay</label>
-                <div className="flex items-center justify-between rounded-xl border border-[#1E2230] bg-[#0E1017] px-4 py-3">
+                <div className="flex items-center justify-between gap-2 rounded-xl border border-[#1E2230] bg-[#0E1017] px-3.5 sm:px-4 py-3">
                   <input
                     type="number"
                     value={swapAmount}
                     onChange={(e) => setSwapAmount(e.target.value)}
-                    className="w-28 bg-transparent font-mono text-lg font-bold text-white focus:outline-none"
+                    className="w-full min-w-0 bg-transparent font-mono text-base sm:text-lg font-bold text-white focus:outline-none"
                     placeholder="0.0"
                   />
-                  <div className="flex items-center gap-1.5 rounded-lg bg-[#191C27] px-2.5 py-1 text-xs font-mono font-bold text-white">
+                  <div className="flex items-center gap-1.5 rounded-lg bg-[#191C27] px-2.5 py-1 text-xs font-mono font-bold text-white shrink-0">
                     <MonadLogo size={14} />
                     <span>MON</span>
                   </div>
@@ -566,11 +566,11 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
               {/* Receive Token */}
               <div>
                 <label className="text-xs text-slate-400 mb-1.5 block">You Receive (Estimated)</label>
-                <div className="flex items-center justify-between rounded-xl border border-[#1E2230] bg-[#0E1017] px-4 py-3">
-                  <div className="font-mono text-lg font-bold text-emerald-400">
+                <div className="flex items-center justify-between gap-2 rounded-xl border border-[#1E2230] bg-[#0E1017] px-3.5 sm:px-4 py-3">
+                  <div className="font-mono text-base sm:text-lg font-bold text-emerald-400 truncate">
                     {estimatedTokensReceived > 0 ? estimatedTokensReceived.toLocaleString(undefined, { maximumFractionDigits: 1 }) : "0"}
                   </div>
-                  <div className="flex items-center gap-1.5 rounded-lg bg-[#191C27] px-2.5 py-1 text-xs font-mono font-bold text-white">
+                  <div className="flex items-center gap-1.5 rounded-lg bg-[#191C27] px-2.5 py-1 text-xs font-mono font-bold text-white shrink-0">
                     <span>{token.symbol}</span>
                   </div>
                 </div>
@@ -618,7 +618,12 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
                     </span>
                     <span className="text-[10px] text-emerald-300">1s Finality</span>
                   </div>
-                  <div className="text-[10px] text-slate-300 truncate">Tx: {swapTxHash}</div>
+                  <div className="text-[10px] text-slate-300 flex items-center gap-1 min-w-0">
+                    <span className="shrink-0">Tx:</span>
+                    <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block">
+                      {swapTxHash}
+                    </span>
+                  </div>
                   <a
                     href={`https://testnet.monadexplorer.com/tx/${swapTxHash}`}
                     target="_blank"
@@ -660,10 +665,12 @@ export default function TokenDeepDivePage({ params }: TokenPageProps) {
                   <div className="flex items-center justify-between">
                     <Link
                       href={`/wallet/${acc.walletAddress}`}
-                      className="font-bold text-white hover:text-[#7053F5] transition-colors flex items-center gap-1"
+                      className="font-bold text-white hover:text-[#7053F5] transition-colors flex items-center gap-1 min-w-0"
                     >
-                      <span>{acc.walletAddress}</span>
-                      <ExternalLink className="h-3 w-3 text-slate-500" />
+                      <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block">
+                        {acc.walletAddress}
+                      </span>
+                      <ExternalLink className="h-3 w-3 text-slate-500 shrink-0" />
                     </Link>
                     <span className="rounded bg-[#7053F5]/20 px-2 py-0.5 text-[10px] font-bold text-[#7053F5]">
                       {acc.tag}

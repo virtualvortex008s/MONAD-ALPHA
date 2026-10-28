@@ -49,7 +49,7 @@ export default function LandingPage() {
             <div className="flex items-baseline gap-1.5">
               <span className="font-bold text-base text-white tracking-tight">MONAD</span>
               <span className="font-mono font-bold text-base text-[#7053F5]">ALPHA</span>
-              <span className="rounded bg-[#7053F5]/15 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#7053F5] border border-[#7053F5]/30 ml-1">
+              <span className="hidden sm:inline-block rounded bg-[#7053F5]/15 px-1.5 py-0.5 text-[9px] font-mono font-bold text-[#7053F5] border border-[#7053F5]/30 ml-1">
                 v1.0 Production Release
               </span>
             </div>
@@ -174,12 +174,12 @@ export default function LandingPage() {
           </div>
 
           {/* Hero Right Graphic Cluster */}
-          <div className="lg:col-span-6 relative min-h-[460px] flex items-center justify-center">
+          <div className="lg:col-span-6 relative min-h-[380px] sm:min-h-[460px] flex items-center justify-center overflow-hidden lg:overflow-visible">
             {/* Ambient Purple Radial Backdrop */}
             <div className="absolute inset-0 bg-gradient-to-tr from-[#7053F5]/10 via-[#00FFA3]/5 to-transparent rounded-3xl blur-2xl pointer-events-none" />
 
             {/* Center Node Orbit Graph with SVG Satellites */}
-            <div className="relative w-full max-w-[480px] h-[460px] flex items-center justify-center">
+            <div className="relative w-full max-w-[480px] h-[380px] sm:h-[460px] flex items-center justify-center scale-[0.8] sm:scale-100 origin-center">
               {/* SVG Orbit Lines */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 480 460">
                 <circle cx="240" cy="230" r="140" stroke="#171922" strokeWidth="1" strokeDasharray="4 4" fill="none" />

@@ -188,8 +188,8 @@ export const FavoritesDrawer: React.FC<FavoritesDrawerProps> = ({
                               </span>
                             </div>
                             <div className="flex items-center gap-1.5 mt-0.5">
-                              <span className="font-mono text-[10px] text-slate-500">
-                                {token.address.slice(0, 6)}...{token.address.slice(-4)}
+                              <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-slate-500">
+                                {token.address}
                               </span>
                               <button
                                 type="button"

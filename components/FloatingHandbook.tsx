@@ -213,7 +213,7 @@ export const FloatingHandbook: React.FC = () => {
           </div>
 
           {/* Quick-Pill Navigation for Mobile & Compact Screens */}
-          <div className="border-b border-[#171922] bg-[#060709] px-3 py-2 overflow-x-auto flex items-center gap-1.5 scrollbar-none shrink-0 lg:hidden">
+          <div className="border-b border-[#171922] bg-[#060709] px-3 py-2 overflow-x-auto flex items-center gap-1.5 no-scrollbar scrollbar-none shrink-0 lg:hidden">
             {chapters.map((chapter) => (
               <button
                 key={chapter.id}

@@ -28,6 +28,26 @@ interface PricePredictionProps {
   onClaimFaucetCredits?: () => void;
 }
 
+/**
+ * Generates a deterministic initial set of 30 price points for SSR and client hydration.
+ * Ensures server-rendered HTML and client hydration match identically, eliminating hydration errors.
+ */
+function getDeterministicInitialPoints(
+  basePrice: number,
+  volatility: number,
+  minDecimals: number
+): PricePoint[] {
+  const initPoints: PricePoint[] = [];
+  for (let i = 29; i >= 0; i--) {
+    // Static deterministic harmonic wave (no Math.random or Date.now on initial render)
+    const variation =
+      Math.sin(i * 0.75) * (volatility * 0.5) + Math.cos(i * 1.35) * (volatility * 0.25);
+    const price = Number((basePrice + variation).toFixed(minDecimals));
+    initPoints.push({ time: 30 - i, price });
+  }
+  return initPoints;
+}
+
 export const PricePrediction: React.FC<PricePredictionProps> = ({
   currentStreak,
   onStreakUpdate,
@@ -41,18 +61,11 @@ export const PricePrediction: React.FC<PricePredictionProps> = ({
   const [selectedPairIndex, setSelectedPairIndex] = useState(0);
   const activePair = ASSET_PAIRS[selectedPairIndex];
 
-  // Live Price State
+  // Live Price State (initialized with deterministic data for SSR safety)
   const [currentPrice, setCurrentPrice] = useState<number>(activePair.basePrice);
-  const [priceHistory, setPriceHistory] = useState<PricePoint[]>(() => {
-    const now = Date.now();
-    const initPoints: PricePoint[] = [];
-    let p = activePair.basePrice;
-    for (let i = 29; i >= 0; i--) {
-      p += (Math.random() - 0.49) * activePair.volatility;
-      initPoints.push({ time: now - i * 1500, price: Number(p.toFixed(activePair.minDecimals)) });
-    }
-    return initPoints;
-  });
+  const [priceHistory, setPriceHistory] = useState<PricePoint[]>(() =>
+    getDeterministicInitialPoints(activePair.basePrice, activePair.volatility, activePair.minDecimals)
+  );
   const [priceDelta, setPriceDelta] = useState<number>(0);
   const [tickDirection, setTickDirection] = useState<"UP" | "DOWN" | "NEUTRAL">("NEUTRAL");
 
@@ -282,6 +295,11 @@ export const PricePrediction: React.FC<PricePredictionProps> = ({
                 onClick={() => {
                   setSelectedPairIndex(idx);
                   setCurrentPrice(pair.basePrice);
+                  setPriceDelta(0);
+                  setTickDirection("NEUTRAL");
+                  setPriceHistory(
+                    getDeterministicInitialPoints(pair.basePrice, pair.volatility, pair.minDecimals)
+                  );
                 }}
                 className={`px-3 py-1.5 rounded-lg font-medium transition cursor-pointer ${
                   selectedPairIndex === idx
@@ -302,7 +320,7 @@ export const PricePrediction: React.FC<PricePredictionProps> = ({
               Live {activePair.symbol} Price
             </span>
             <div className="flex items-baseline gap-3">
-              <span className="text-2xl sm:text-3xl font-extrabold text-white font-mono tracking-tight">
+              <span suppressHydrationWarning className="text-2xl sm:text-3xl font-extrabold text-white font-mono tracking-tight">
                 ${currentPrice.toFixed(activePair.minDecimals)}
               </span>
               <div
@@ -319,7 +337,7 @@ export const PricePrediction: React.FC<PricePredictionProps> = ({
                 ) : (
                   <ArrowDownRight className="h-3.5 w-3.5" />
                 )}
-                <span>
+                <span suppressHydrationWarning>
                   {priceDelta >= 0 ? "+" : ""}
                   {priceDelta.toFixed(activePair.minDecimals)}
                 </span>
@@ -411,7 +429,7 @@ export const PricePrediction: React.FC<PricePredictionProps> = ({
         <div className="my-6 rounded-xl bg-[#090B0F] border border-[#171922] p-4 relative overflow-hidden">
           <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 pb-2 border-b border-[#171922]/50">
             <span>Price Curve (Last 30 Ticks)</span>
-            <span>Range: ${chartSvgData.min.toFixed(4)} - ${chartSvgData.max.toFixed(4)}</span>
+            <span suppressHydrationWarning>Range: ${chartSvgData.min.toFixed(4)} - ${chartSvgData.max.toFixed(4)}</span>
           </div>
 
           <div className="relative h-36 w-full mt-2">
@@ -545,7 +563,7 @@ export const PricePrediction: React.FC<PricePredictionProps> = ({
             </div>
           </div>
 
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-4 sm:grid-cols-5 gap-1.5 sm:gap-2">
             {[0.1, 0.5, 1.0, 2.0].map((amount) => (
               <button
                 key={amount}
@@ -555,7 +573,7 @@ export const PricePrediction: React.FC<PricePredictionProps> = ({
                   setWager(amount);
                   setCustomWagerInput("");
                 }}
-                className={`py-2 px-3 rounded-xl border text-xs font-mono font-bold transition cursor-pointer ${
+                className={`py-2 px-1.5 sm:px-3 rounded-xl border text-[11px] sm:text-xs font-mono font-bold transition cursor-pointer truncate ${
                   wager === amount && !customWagerInput
                     ? "bg-[#7053F5] text-white border-[#7053F5] shadow-[0_0_12px_rgba(112,83,245,0.4)]"
                     : "bg-[#13161F] border-[#171922] text-slate-300 hover:text-white hover:border-slate-700"
@@ -679,7 +697,7 @@ export const PricePrediction: React.FC<PricePredictionProps> = ({
             No rounds played yet. Place a Bull or Bear prediction to start!
           </div>
         ) : (
-          <div className="overflow-x-auto">
+          <div className="responsive-table-container">
             <table className="w-full text-left font-mono text-xs">
               <thead>
                 <tr className="border-b border-[#171922] text-slate-500 text-[11px]">

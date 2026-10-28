@@ -82,12 +82,12 @@ export const SmartMoneyFeed: React.FC<SmartMoneyFeedProps> = ({
         </div>
 
         {/* Filter tags */}
-        <div className="flex items-center gap-1 rounded-lg border border-[#1E2230] bg-[#0E1017] p-1 text-xs">
+        <div className="flex items-center gap-1 rounded-lg border border-[#1E2230] bg-[#0E1017] p-1 text-xs overflow-x-auto max-w-full no-scrollbar">
           {["ALL", "Whale", "Sniper", "Smart Trader"].map((tag) => (
             <button
               key={tag}
               onClick={() => setFilterTag(tag)}
-              className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition-all ${
+              className={`rounded-md px-2.5 py-1 text-[11px] font-semibold transition-all shrink-0 cursor-pointer ${
                 filterTag === tag
                   ? "bg-[#7053F5] text-white shadow"
                   : "text-slate-400 hover:text-white"
@@ -109,9 +109,9 @@ export const SmartMoneyFeed: React.FC<SmartMoneyFeedProps> = ({
               className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[#1E2230] bg-[#0E1017] p-3 transition-all hover:border-[#7053F5]/40 hover:bg-[#151722]"
             >
               {/* Left: Wallet Info */}
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5 sm:gap-3 min-w-0">
                 <span
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg font-mono text-xs font-bold ${
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-mono text-xs font-bold ${
                     isBuy
                       ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/25"
                       : "bg-red-500/15 text-red-400 border border-red-500/25"
@@ -124,20 +124,23 @@ export const SmartMoneyFeed: React.FC<SmartMoneyFeedProps> = ({
                   )}
                 </span>
 
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-slate-200">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <span className="font-mono text-xs sm:text-sm font-bold text-slate-200 truncate max-w-[120px] sm:max-w-[200px] inline-block align-middle">
                       {trade.walletAddress}
                     </span>
-                    <span className="rounded bg-[#7053F5]/15 px-1.5 py-0.2 font-mono text-[10px] font-bold text-[#7053F5] border border-[#7053F5]/25">
+                    <span className="rounded bg-[#7053F5]/15 px-1.5 py-0.2 font-mono text-[10px] font-bold text-[#7053F5] border border-[#7053F5]/25 shrink-0">
                       {trade.walletTag}
                     </span>
-                    <span className="font-mono text-[10px] text-emerald-400 font-semibold">
+                    <span className="font-mono text-[10px] text-emerald-400 font-semibold shrink-0">
                       {trade.winRate}% WR
                     </span>
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5 font-mono">
-                    <span>Tx: {trade.txHash}</span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] text-slate-500 mt-0.5 font-mono truncate">
+                    <span className="shrink-0">Tx:</span>
+                    <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block">
+                      {trade.txHash}
+                    </span>
                     <span>•</span>
                     <span>{trade.timestamp}</span>
                   </div>

@@ -93,7 +93,7 @@ export const AlphaRadarTable: React.FC<AlphaRadarTableProps> = ({
 
   return (
     <div className="overflow-hidden rounded-xl border border-[#171922] bg-[#0D0F14] shadow-xl">
-      <div className="w-full overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div className="w-full overflow-x-auto responsive-table-container">
         <table className="w-full min-w-[650px] text-left text-xs">
           {/* Table Header */}
           <thead className="border-b border-[#171922] bg-[#0A0C11] text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
@@ -214,8 +214,8 @@ export const AlphaRadarTable: React.FC<AlphaRadarTableProps> = ({
                             </span>
                           </div>
                           <div className="flex items-center gap-1 mt-0.5">
-                            <span className="font-mono text-[10px] text-slate-500">
-                              {token.address.slice(0, 6)}...{token.address.slice(-4)}
+                            <span className="font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-[200px] inline-block text-slate-500">
+                              {token.address}
                             </span>
                             <button
                               onClick={(e) => handleCopy(token.address, e)}
