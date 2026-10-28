@@ -32,8 +32,9 @@ export const ClientShell: React.FC<{ children: ReactNode }> = ({ children }) => 
       .catch(() => {});
   }, []);
 
-  // Global ⌘K / Ctrl+K listener
+  // Global ⌘K / Ctrl+K listener for landing page only (main pages use TopBar token contract search)
   useEffect(() => {
+    if (pathname !== "/landing") return;
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
@@ -42,7 +43,7 @@ export const ClientShell: React.FC<{ children: ReactNode }> = ({ children }) => 
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
+  }, [pathname]);
 
   const handleSelectToken = (token: Token) => {
     router.push(`/alpha-scanner?token=${encodeURIComponent(token.address)}`);
